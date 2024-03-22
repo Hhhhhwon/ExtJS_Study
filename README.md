@@ -21,7 +21,8 @@ Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS �
 1. **폴더 생성**: `C:\WorkspaceExtjs`에 `BasicWidgets` 폴더를 만듦. 📁
 2. **필수 파일 복사**: `BasicWidgets`에 CSS 파일과 `ext-all-debug.js` 파일을 복사. 📋
 3. **실습 폴더 및 파일 생성**: `BasicWidgets` 내에 `BasicComp` 폴더를 만들고, 이 폴더 안에 `index.html`과 `index.js` 파일을 생성. ✨
-4. **VSCode로 작업 공간 열기**: VSCode를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
+4. **VSCode로 작업 공간 열기**:   **<img alt="VScode" src="https://img.shields.io/badge/VScode-0078d7?style=for-the-badge&logo=visualstudiocode" style="border-radius: 6px;">**
+를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
 ---
 
 # Ext JS 페이지 기본 구조 📄
