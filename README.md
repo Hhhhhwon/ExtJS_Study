@@ -1,8 +1,17 @@
+# 📚 Ext JS 개발 가이드 목차 🌟
+
+- 🌈 [Ext JS 기본 컴포넌트 가이드](#🌟-ext-js-기본-컴포넌트-가이드-🌈)
+- 📝 [Ext JS 컴포넌트 기본 소개](#🛠-기본-컴포넌트-소개-🎯)
+- 📄 [Ext JS 예제 페이지 기본 구조](#📖-ext-js-페이지-기본-구조-📄)
+- 🔍 [Ext JS 애플리케이션의  예제 (index.html) HTML 구조 설명](#📑-ext-js-애플리케이션의-indexhtml-html-구조-설명-🌟)
+- 💡[Ext JS 애플리케이션 예제 코드(index.js) 분석](#🌟ext-js-애플리케이션-예제-코드indexjs-분석-📘)
+---
+
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
 
-Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산입니다. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내합니다. 🚀
+### Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산입니다. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내합니다. 🚀
 
-## 🛠 기본 컴포넌트 소개 🎯
+# 🛠 기본 컴포넌트 소개 🎯
 
 - **Panel (`Ext.panel.Panel`)**: 🖼 다양한 UI 구성 요소를 담을 수 있는 컨테이너입. 레이아웃 및 이벤트 관리에 최적화.
 - **TextField (`Ext.form.field.Text`)**: 📝 사용자로부터 텍스트 입력을 받는 필드. 비밀번호, 이메일 등 다양한 입력 유형을 처리할 수 있음.
@@ -21,10 +30,10 @@ Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS �
 1. **폴더 생성**: `C:\WorkspaceExtjs`에 `BasicWidgets` 폴더를 만듦. 📁
 2. **필수 파일 복사**: `BasicWidgets`에 CSS 파일과 `ext-all-debug.js` 파일을 복사. 📋
 3. **실습 폴더 및 파일 생성**: `BasicWidgets` 내에 `BasicComp` 폴더를 만들고, 이 폴더 안에 `index.html`과 `index.js` 파일을 생성. ✨
-4. **VSCode로 작업 공간 열기**: VSCode를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
+4. **VSCode로 작업 공간 열기**: VSCodegit add를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
 ---
 
-# Ext JS 페이지 기본 구조 📄
+#  📖 Ext JS 페이지 기본 구조 📄
 
 ### HTML 문서의 기본 구조와 함께 Ext JS 라이브러리와 CSS를 포함하는 방법에 대해 알아보자.
 
