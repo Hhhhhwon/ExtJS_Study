@@ -1,9 +1,9 @@
 # 📚 Ext JS 개발 가이드 목차 🌟
 
 - 🌈 [Ext JS 기본 컴포넌트 가이드](#🌟-ext-js-기본-컴포넌트-가이드-🌈)
-- 📝 [Ext JS 컴포넌트 기본 소개](#🛠-기본-컴포넌트-소개-🎯)
+    - 📝 [Ext JS 컴포넌트 기본 소개](#🛠-기본-컴포넌트-소개-🎯)
 - 📄 [Ext JS 예제 페이지 기본 구조](#📖-ext-js-페이지-기본-구조-📄)
-- 🔍 [Ext JS 애플리케이션의  예제 (index.html) HTML 구조 설명](#📑-ext-js-애플리케이션의-indexhtml-html-구조-설명-🌟)
+    - 🔍 [Ext JS 애플리케이션의  예제 (index.html) HTML 구조 설명](#📑-ext-js-애플리케이션의-indexhtml-html-구조-설명-🌟)
 - 💡[Ext JS 애플리케이션 예제 코드(index.js) 분석](#🌟ext-js-애플리케이션-예제-코드indexjs-분석-📘)
 ---
 
