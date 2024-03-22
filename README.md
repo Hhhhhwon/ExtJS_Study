@@ -1,6 +1,6 @@
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
 
-Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산입니다. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내합니다. 🚀
+Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산입니다. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내. 🚀
 
 ## 🛠 기본 컴포넌트 소개 (너무 많기 때문에 차차 추가하도록 하겠습니다)  🎯
 
@@ -14,14 +14,14 @@ Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개�
 
 ## 📚 컴포넌트 사용을 위한 참고 자료
 
-Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS 공식 문서](https://docs.sencha.com/extjs/7.0.0/classic/Ext.form.field.Date.html)에서 필요한 컴포넌트를 검색하고, 그 사용법을 익히는 것이 좋습니다. 🕵️‍♂️
+Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS 공식 문서](https://docs.sencha.com/extjs/7.0.0/classic/Ext.form.field.Date.html)에서 필요한 컴포넌트를 검색하고, 그 사용법을 익히는 것이 좋음. 🕵️‍♂️
 
 ## 🌐 실습 준비하기
 
 1. **폴더 생성**: `C:\WorkspaceExtjs`에 `BasicWidgets` 폴더를 만듦. 📁
 2. **필수 파일 복사**: `BasicWidgets`에 CSS 파일과 `ext-all-debug.js` 파일을 복사. 📋
 3. **실습 폴더 및 파일 생성**: `BasicWidgets` 내에 `BasicComp` 폴더를 만들고, 이 폴더 안에 `index.html`과 `index.js` 파일을 생성. ✨
-4. **VSCode로 작업 공간 열기**: VSCode를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
+4. **VSCode로 작업 공간 열기**: VSCode or Cursor를 실행하여 `BasicWidgets` 폴더를 열고 실습을 준비. 🖥
 ---
 
 # Ext JS 페이지 기본 구조 📄
