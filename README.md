@@ -5,15 +5,16 @@
 - 📄 [Ext JS 예제 페이지 기본 구조](#📖-ext-js-페이지-기본-구조-📄)
     - 🔍 [Ext JS 애플리케이션의  예제 (index.html) HTML 구조 설명](#📑-ext-js-애플리케이션의-indexhtml-html-구조-설명-🌟)
 - 💡[Ext JS 애플리케이션 예제 코드(index.js) 분석](#🌟ext-js-애플리케이션-예제-코드indexjs-분석-📘)
+
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
 
-### Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산입니다. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내합니다. 🚀
+### Ext JS는 방대한 UI 컴포넌트 라이브러리를 제공하며, 이는 개발 과정에서 필수적인 자산. 여기서는 Ext JS에서 제공하는 주요 기본 컴포넌트들을 소개하고, 실습 준비 방법에 대해 안내. 🚀
 
 # 🛠 기본 컴포넌트 소개 🎯
 
-- **Panel (`Ext.panel.Panel`)**: 🖼 다양한 UI 구성 요소를 담을 수 있는 컨테이너입. 레이아웃 및 이벤트 관리에 최적화.
+- **Panel (`Ext.panel.Panel`)**: 🖼 다양한 UI 구성 요소를 담을 수 있는 컨테이너. 레이아웃 및 이벤트 관리에 최적화.
 - **TextField (`Ext.form.field.Text`)**: 📝 사용자로부터 텍스트 입력을 받는 필드. 비밀번호, 이메일 등 다양한 입력 유형을 처리할 수 있음.
 - **DateField (`Ext.form.field.Date`)**: 📅 사용자가 날짜를 선택할 수 있는 달력 기반 필드.
 - **ComboBox (`Ext.form.field.ComboBox`)**: 🔽 사용자가 드롭다운 목록에서 선택할 수 있는 필드. 사용자 정의 옵션 목록을 제공합니다.
@@ -24,7 +25,7 @@
 
 ## 📚 컴포넌트 사용을 위한 참고 자료
 
-Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS 공식 문서](https://docs.sencha.com/extjs/7.0.0/classic/Ext.form.field.Date.html)에서 필요한 컴포넌트를 검색하고, 그 사용법을 익히는 것이 좋습니다. 🕵️‍♂️
+Ext JS 컴포넌트들은 그 기능이 매우 방대하기 때문에, [Ext JS 공식 문서](https://docs.sencha.com/extjs/7.0.0/classic/Ext.form.field.Date.html)에서 필요한 컴포넌트를 검색하고, 그 사용법을 익히는 것이 좋음. 🕵️‍♂️
 
 ## 🌐 실습 준비하기
 
@@ -424,139 +425,7 @@ window.show(); // 윈도우를 화면에 표시
 #### 윈도우 내부에는 사용자와의 상호작용을 위한 다양한 요소를 배치할 수 있으며, 이를 통해 동적이고 상호작용적인 사용자 경험을 제공할 수 있음.
 ---
 
-```javascript
-// Ext.onReady는 문서가 완전히 로드되고 준비된 후에 지정된 함수를 실행하도록 하는 Ext JS의 메서드입니다.
-Ext.onReady(function(){
 
-    // Ext.create를 사용하여 'Ext.form.TextField'라는 텍스트 필드를 생성합니다. 이것은 사용자로부터 입력을 받을 수 있는 기본적인 텍스트 박스.
-    let textField = Ext.create('Ext.form.TextField',{
-        fieldLabel:'위에서 추가된 텍스트' // fieldLabel은 텍스트 필드 옆에 표시되는 라벨.
-    })
-
-    // 패널을 생성합니다. 패널은 여러 컴포넌트를 그룹화하고 관리하는 컨테이너 역할.
-    Ext.create('Ext.panel.Panel', {
-        title:'My Panel', // 패널의 제목
-        renderTo:document.body, // 패널이 렌더링될 위치, 여기서는 문서의 body.
-        width:600, // 패널의 너비
-        height:600, // 패널의 높이
-        rootView:true, // 사용자 정의 속성입니다. 특정 작업을 수행할 때 이 패널을 찾기 위해 사용될 수 있음.
-        scrollable:true, // 패널 내용이 넘치면 스크롤을 허용.
-        items:[ // 패널에 추가할 자식 컴포넌트들의 배열
-            textField, // 앞서 생성한 텍스트 필드
-            {
-                xtype:'panel', // 간단한 서브 패널
-                width:100,
-                height:50,
-                html:'aaa' // 패널에 표시될 HTML 내용
-            },{
-                xtype:'textfield', // 또 다른 텍스트 필드
-                fieldLabel:'제목',
-                labelWidth:60, // 라벨 너비
-                width:160 // 컴포넌트 너비
-            },{
-                // 날짜를 선택할 수 있는 필드
-                xtype:'datefield',
-                fieldLabel:'날짜',
-                labelWidth:60,
-                width:200
-            },{
-                // 드롭다운 목록을 제공하는 콤보 박스
-                xtype:'combobox',
-                fieldLabel:'선택',
-                labelWidth:60,
-                width:200,
-                valueField:'value', // 실제 값 필드
-                displayField:'display', // 사용자에게 보여지는 텍스트 필드
-                // 콤보 박스의 아이템들을 정의하는 스토어
-                store:{
-                    field:['value', 'display'],
-                    data:[{
-                        value:'1', display:'홍길동'
-                    },{
-                        value:'2', display:'임꺽정'
-                    },{
-                        value:'3', display:'유관순'
-                    },{
-                        value:'4', display:'이순신'
-                    }]
-                }
-            },{
-                // 버튼 컴포넌트, 클릭 시 특정 액션을 수행
-                xtype:'button',
-                text:'버튼',
-                width:100,
-                handler:function(){
-                    // 버튼 클릭 시 새 텍스트 필드를 동적으로 추가하고, 새 윈도우를 생성해 표시
-                    this.up('[rootView=true]').add(
-                        Ext.create('Ext.form.TextField',{
-                            fieldLabel:'추가된 텍스트'
-                        })
-                    )
-                    let window = Ext.create('Ext.window.Window',{
-                        title:'윈도우',
-                        width:400,
-                        height:300,
-                        items:[{
-                            xtype:'textfield',
-                            fieldLabel:'텍스트'
-                        }]
-                    });
-                    window.show();
-                }
-            },{
-                // 그리드 컴포넌트, 복수의 데이터를 테이블 형태로 표시
-                xtype:'grid',
-                width:300,
-                height:300,
-                store:{
-                    field:['value', 'display'],
-                    data:[{
-                        value:'1', display:'홍길동'
-                    },{
-                        value:'2', display:'임꺽정'
-                    },{
-                        value:'3', display:'유관순'
-                    },{
-                        value:'4', display:'이순신'
-                    },{
-                        value:'5', display:'강감찬'
-                    }]
-                },
-                columns:[{
-                    text:'값',
-                    dataIndex:'value', // 해당 컬럼이 표시할 데이터의 필드명
-                    with:100
-                },{
-                    text:'보여주는항목',
-                    dataIndex:'display', // flex 속성은 컬럼 너비를 유동적으로 조절.
-                    flex:1
-                }]
-            },{
-                // 트리 패널, 계층적 데이터를 트리 형태로 표시
-                xtype:'treepanel',
-                width:300,
-                height:300,
-                store:{
-                    root:{
-                        expanded:true, // 루트 노드 확장 여부
-                        children:[ // 자식 노드들
-                            {text:'일', leaf:true},
-                            {text:'이', leaf:true},
-                            {text:'삼', leaf:false, // leaf가 false면 자식 노드를 가질 수 있음.
-                                children:[{
-                                    text:'삼-일', leaf:true
-                                },{
-                                    text:'삼-이', leaf:true
-                                }]
-                            }
-                        ]
-                    }
-                },
-                rootVisible:false, // 루트 노드를 숨김.
-            }]
-    })
-})
-```
 
 
 
