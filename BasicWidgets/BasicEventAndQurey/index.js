@@ -14,24 +14,42 @@ Ext.onReady(function(){
                 xtype:'textfield',
                 fieldLabel:'제목1',
                 labelAlign:'right',
-                width:100,
+                name: 'subject1',
+                width:150,
+                listeners:{
+                    el:{
+                        click:function(){
+                            Ext.Msg.alert('확인', '클릭')
+                        }
+                    } 
+                }
             },{
                 xtype:'textfield',
                 fieldLabel:'제목2',
                 labelAlign:'right',
-                width:100,
+                name: 'subject2',
+                width:150,
             },{
                 xtype:'container',
                 flex:1,
-            },{
+            },{ // 보통 버튼에서 이벤트를 추가하는 방법은 listener 를 정의하여 click 이벤트를 정의
+                // 하지만 일반적으로 버튼이나 이런것들은 click 이벤트를 많이사용하기때문에 handler 이벤트를 부여가능 정식은 listener click
                 xtype:'button',
                 text:'조회',
+                listeners:{
+                    click:function(){
+                    let text1 = this.up('panel').down('[name=subject1]');
+                    let text2 = this.up('panel').down('[name=subject2]');
+                        // let text1 = this.previousSibling('[name=subject1]');
+                        // let text2 = this.previousSibling('[name=subject2]');
+                   // let text1 =  Ext.ComponentQuery.query('textfield[name=subject1]')[0];
+                   // let text2 =  Ext.ComponentQuery.query('textfield[name=subject2]')[0];
+                   // click:function(){}
+                    text2.setValue(text1.getValue());
+                    }
+
+                }
             }]
-        },{
-            region:'south',
-            xtype:'container',
-            width:100,
-            split:true
         },{
             region:'center',
             xtype:'grid',
@@ -94,6 +112,3 @@ Ext.onReady(function(){
         renderTo:document.body
     })
 })
-
-
-
