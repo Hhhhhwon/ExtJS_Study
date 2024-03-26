@@ -7,7 +7,8 @@
 - 💡[Ext JS 애플리케이션 예제 코드(index.js) 분석](#🌟ext-js-애플리케이션-예제-코드indexjs-분석-📘)
 - 🌈[Ext JS 컨테이너와 레이아웃](#🌟-ext-js-컨테이너와-레이아웃-🌈)
 - 🌈[Ext JS 이벤트와 컴포넌트 접근](#🌟-ext-js-이벤트와-컴포넌트-접근🌈)
--  
+- 🌈[Ext JS 클래스 정의와 상속](#🌟-ext-js-클래스-정의와-상속🌈)
+- 🌈[Ext JS MVC 아키텍쳐(Acrhitecture)](#🌈-ext-js-mvc-아키텍쳐-mvc-architecture-🏛️🖥️) 
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
@@ -808,6 +809,7 @@ Ext.create('Ext.panel.Panel', {
     ],
     renderTo: Ext.getBody()
 });
+
 // region 속성을 통해 컴포넌트가 위치할 영역을 지정. border 레이아웃은 center, north, south, east, west의 5가지 영역으로 구분.
 // split: true 설정은 지정된 영역에 스플리터 바를 추가. 사용자는 이 바를 드래그하여 영역의 크기를 조절할 수 있으며, 이로 인해 인접 영역의 크기도 자동으로 조정됨.
 ```
@@ -903,12 +905,12 @@ Ext JS에서 `previousSibling` 메서드는 현재 컴포넌트의 직전 형제
 ## 💡  핵심 개념
 
 - **`previousSibling` 메서드 사용법:**
-    ```javascript
+ ```javascript
     // 예시 코드는 주석 처리
     // let text1 = this.previousSibling('[name=subject1]');
     // let text2 = this.previousSibling('[name=subject2]');
-    ```
-    이 코드 조각에서 `this.previousSibling('[name=subject1]')`는 현재 컴포넌트(예를 들어, 버튼)로부터 시작하여, 같은 부모를 공유하고 바로 앞에 위치한 `[name=subject1]` 속성을 가진 형제 컴포넌트를 찾음.
+```
+#### 이 코드 조각에서 `this.previousSibling('[name=subject1]')`는 현재 컴포넌트(예를 들어, 버튼)로부터 시작하여, 같은 부모를 공유하고 바로 앞에 위치한 `[name=subject1]` 속성을 가진 형제 컴포넌트를 찾음.
 
 - **적용 상황:** 이 방식은 형제 컴포넌트들이 순차적으로 배치된 상황에서, 특정 컴포넌트를 기준으로 앞에 위치한 컴포넌트를 찾고자 할 때 특히 유용.
 
@@ -955,6 +957,201 @@ Ext JS에서 `previousSibling` 메서드는 현재 컴포넌트의 직전 형제
 
 #### 이 방식은 애플리케이션 내에서 특정 조건을 만족하는 컴포넌트를 효과적으로 찾고자 할 때 매우 유용. 하지만, 전역적으로 탐색을 수행하기 때문에 성능 고려와 정확한 탐색을 위해 사용 조건을 명확히 정의하는 것이 중요. 이러한 방식을 통해 복잡한 UI 구조에서도 필요한 컴포넌트를 효과적으로 찾아낼 수 있음.
 ---
+
+##  🔍 버튼 클릭으로 그리드 데이터 업데이트하기
+
+#### 웹 애플리케이션에서 사용자가 '조회' 버튼을 클릭했을 때, 특정 데이터를 보여주는 그리드(표)를 업데이트하는 기능.
+
+```javascript
+// '조회' 버튼 클릭 이벤트 정의
+xtype: 'button',
+text: '조회',
+listeners: {
+    click: function() {
+        // 현재 버튼이 위치한 패널 내의 그리드 컴포넌트 찾기
+        let grid = this.up('panel').down('grid');
+
+        // 그리드의 데이터 저장소에서 모든 데이터 제거
+        grid.getStore().removeAll();
+
+        // 데이터 저장소에 새로운 데이터 항목들 추가
+        grid.getStore().add({value: '1', display: '값1'});
+        grid.getStore().add({value: '1', display: '값2'});
+    }
+},
+```
+
+### 핵심 개념 및 메서드 설명 🔍
+
+- **`getStore()`** 📦: 이 메서드는 그리드와 연결된 데이터 저장소(Store)에 접근. 데이터 저장소는 그리드에 표시되는 모든 데이터를 관리.
+
+- **`removeAll()`** 🗑️: `getStore()`로 얻은 데이터 저장소에서 `removeAll()` 메서드를 호출하면 저장소의 모든 데이터를 지울 수 있음. 즉, 그리드가 비워지게 됨.
+
+- **`add()`** ➕: 그리드의 데이터 저장소에 새로운 데이터를 추가할 때 사용. 여기서는 `{value: '1', display: '값1'}`와 같은 객체 형태로 데이터를 전달해, 그리드에 새로운 행을 추가.
+
+### 추가 메서드 설명 🛠️
+
+- **`up()`** 🔼: 현재 컴포넌트에서 호출되며, 인자로 전달된 선택자에 해당하는 상위 컴포넌트를 찾음. 예를 들어, `this.up('panel')`은 현재 컴포넌트의 상위에 위치한 패널 컴포넌트를 찾음.
+
+- **`down()`** 🔽: `up()`과 반대로, 현재 컴포넌트의 하위에 있는 컴포넌트 중 인자로 전달된 선택자에 해당하는 첫 번째 컴포넌트를 찾음. `this.down('grid')`는 현재 컴포넌트 안에서 찾을 수 있는 첫 번째 그리드 컴포넌트를 찾음.
+
+######  🌟이러한 메서드들을 사용하여, 버튼 클릭에 반응해 동적으로 그리드의 데이터를 조작하고, 웹 페이지를 더 상호작용적으로 만들 수 있음🌟
+---
+
+# 🌟 Ext JS 클래스 정의와 상속🌈
+
+### Ext JS는 웹 애플리케이션을 구축하기 위한 풍부한 UI 컴포넌트와 프레임워크를 제공. 중요한 개념 중 하나는 클래스의 정의와 상속.
+
+#### 📘 클래스 정의하기
+#### Ext.define 메소드를 사용하여 Ext.panel.Panel이라는 새로운 클래스를 정의하는 방법:
+```javascript
+Ext.define('Ext.panel.Panel', {
+    extend: 'Ext.container.Container', // 상속받을 클래스
+    alias: 'widget.panel',             // 이 클래스에 대한 xtype 별칭
+    alternateClassName: 'Ext.Panel',   // 클래스에 대한 대체 이름
+    requires: [                        // 이 클래스가 의존하는 다른 클래스들
+        'Ext.panel.Header',
+        'Ext.util.MixedCollection',
+        'Ext.toolbar.Toolbar',
+        'Ext.fx.Anim',
+        'Ext.panel.DD',
+        'Ext.XTemplate',
+        'Ext.layout.component.Dock',
+        'Ext.util.Memento
+        ...                            // 기타 필요한 의존성들
+    ],
+    // 클래스의 속성 및 메서드 정의...
+    // Ext.define 메소드를 사용하여 Ext.panel.Panel라는 새로운 클래스를 정의. 이 클래스는 Ext.container.Container를 상속받아 컨테이너의 기능을 확장. alias 속성을 통해 이 클래스를 widget.panel이라는 xtype으로 간편하게 참조.
+});
+```
+### 🚀 `xtype`과 `Ext.create`의 관계
+#### `xtype`은 컴포넌트의 별칭으로, `Ext.create` 없이도 컴포넌트를 간단하게 생성할 수 있게 해줌:
+
+```javascript
+{
+    xtype: 'panel',  // 'widget.panel'의 별칭
+    title: '내 패널', // 패널 제목
+    width: 600,      // 패널 너비
+    height: 400      // 패널 높이
+}
+```
+### 🌟 Ext.application으로 애플리케이션 시작하기
+#### 현대적인 Ext JS 애플리케이션 구조에서는 `Ext.onReady` 대신 `Ext.application`을 사용합니다. 이는 `MVC` 또는 `MVVM` 아키텍처를 적용하기에 적합한 방법:
+
+```javascript
+Ext.application({
+    name: 'MyApp',
+    launch: function() {
+        // 애플리케이션 시작 시 실행할 코드
+        Ext.create('MyApp.view.Main');
+    }
+});
+// Ext.application은 애플리케이션의 이름과 시작 시 수행할 함수를 정의. 여기서는 MyApp.view.Main 뷰를 생성하여 애플리케이션의 메인 화면으로 사용.
+```
+
+## 🚀 Ext JS에서 별칭(Alias) 사용하기
+#### `Ext JS`에서는 컴포넌트를 더 간단하게 참조할 수 있도록 `alias` 속성을 사용. 특히, UI 컴포넌트에 별칭을 지정할 때는 `widget.` 접두사를 사용하는 것이 일반적.
+
+### 🛠 별칭 지정하기
+#### 별칭을 지정하려면, `alias` 속성에 `"widget.별칭"` 형태로 값을 지정. 이렇게 설정하면, 해당 컴포넌트를 xtype을 통해 간단하게 참조할 수 있음.
+
+```javascript
+Ext.define('MyApp.view.MyPanel', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.mypanel', // 별칭을 'mypanel'로 지정
+    ...
+});
+```
+## 🌈 xtype으로 컴포넌트 참조하기
+별칭`(alias)`을 지정한 후에는, `xtype`을 사용하여 해당 컴포넌트를 쉽게 생성할 수 있음. xtype은 별칭의` widget.` 부분을 제외한 값을 사용.
+
+```javascript
+{
+    xtype: 'mypanel', // 별칭 'widget.mypanel'에 해당하는 컴포넌트 생성
+    title: '내 커스텀 패널',
+    width: 300,
+    height: 200
+}
+```
+## 💡 별칭과 xtype의 중요성
+#### 간결성: `alias`와 `xtype`을 사용하면, 긴 클래스 이름을 명시하지 않고도 컴포넌트를 참조하고 생성할 수 있어, 코드가 훨씬 간결해짐.
+#### 재사용성: 컴포넌트에 별칭을 지정함으로써, 애플리케이션 전반에 걸쳐 해당 컴포넌트를 쉽게 재사용할 수 있음.
+#### 유지보수성: 별칭을 통해 컴포넌트를 참조하면, 컴포넌트의 클래스 이름이 변경되어도 별칭이 유지되는 한 코드의 나머지 부분을 수정할 필요가 없어, 유지보수가 용이해짐.
+### 🌟 비전공자를 위한 추가 설명
+#### `alias`와 `xtype`을 사용하는 것은 마치 닉네임을 사용해서 친구를 부르는 것과 비슷. 우리가 친구의 정식 이름 대신 닉네임을 사용해서 더 쉽고 빠르게 친구를 부를 수 있는 것처럼, `Ext JS`에서도 `alias`와 `xtype`을 통해 컴포넌트를 더 쉽고 빠르게 사용할 수 있음. 이런 방식으로, 개발자는 복잡한 `UI`를 구성하는 데 필요한 컴포넌트를 더 쉽게 관리하고 재사용할 수 있게 됨.
+---
+### 📚 Ext.define과 클래스 정의 (예제코드 및 복습)
+```javascript
+Ext.onReady(function(){
+// MyPanel 클래스를 정의. Ext.panel.Panel을 상속받아 기본 패널 기능을 확장.
+Ext.define('MyApp.view.MyPanel', {
+    extend: 'Ext.panel.Panel',      // Ext.panel.Panel 클래스를 상속.
+    alias: 'widget.mypanel',        // 'widget.mypanel'이라는 별칭을 지정.
+    bodyStyle: 'background-color:red', // 패널의 바디 스타일을 정의.
+    title: '사용자 정의 패널',       // 패널 제목 설정
+    width: 400,                     // 패널 너비
+    height: 200                     // 패널 높이
+});
+// ----------------------------------
+    Ext.define('클래스명', {
+    extend: '상속받을 클래스명',
+    alias: 'widget.별칭',
+    // 추가 속성 및 메서드 정의...
+});
+// ----------------------------------
+
+    // MyPanel 인스턴스 생성 및 렌더링
+    var panel = Ext.create('Ext.panel.Panel', {
+        renderTo: document.body,   // HTML body에 렌더링
+        title: '상속받은패널',       // 패널 제목
+        width: 600,                // 패널 너비
+        height: 600,               // 패널 높이
+        items: [{                  // 자식 컴포넌트 추가
+            xtype: 'mypanel',      // 위에서 정의한 xtype 사용
+            width: 400,
+            height: 400,
+        }]
+    });
+});
+```
+
+### 💡 Ext.define을 사용하는 이유
+- ###### 재사용성: 클래스를 정의함으로써 동일한 구조의 컴포넌트를 여러 곳에서 쉽게 재사용할 수 있음.
+- ###### 확장성: 상속 기능을 사용하여 기존 컴포넌트의 기능을 확장하고, 커스텀 동작을 추가할 수 있음.
+- ###### 유지보수성: 클래스 단위로 코드를 구성하면, 애플리케이션의 유지보수성이 향상.
+
+### 🚀 Ext.onReady vs Ext.application
+#### `Ext.onReady`: 페이지가 전부 로드되고 준비된 후에 실행되는 코드를 정의. 기본적인 `Ext JS` 예제나 작은 스크립트에서 자주 사용. 🛠
+
+#### `Ext.application`: 현대적인 `Ext JS` 애플리케이션에서 사용되며, `MVC` 또는 `MVVM` 아키텍처를 기반으로 한 애플리케이션 구조를 정의. 🏗
+---
+## 🛠 extend 속성: 클래스 상속 이해하기
+#### `Ext JS`에서 `extend` 속성은 클래스 상속의 핵심. 이 속성을 사용하여 기존 클래스의 기능을 확장하고, 새로운 커스텀 클래스를 정의할 수 있음.
+
+### 🌱 기본 사용법:
+#### `extend` 속성에는 상속받고자 하는 부모 클래스의 이름이 지정됨. 이를 통해 부모 클래스의 모든 속성과 메서드를 상속받아, 추가적인 기능을 구현하거나 기존 기능을 오버라이드(재정의)할 수 있음.
+
+```javascript
+
+Ext.define('MyApp.view.CustomPanel', {
+    extend: 'Ext.panel.Panel',  // Ext.panel.Panel 클래스를 상속받습니다.
+    // 커스텀 속성 및 메서드 추가...
+});
+```
+### 💼 상속을 사용하는 이유:
+- ###### 재사용성 향상: 공통적인 기능을 가진 부모 클래스를 만들고, 이를 상속받아 여러 커스텀 클래스에서 재사용할 수 있음.
+- ######  코드 중복 최소화: 상속을 통해 기존 클래스의 기능을 재활용함으로써, 유사한 기능을 가진 여러 클래스에서 코드 중복을 줄일 수 있음.
+- ###### 확장성 및 유지보수성: 상속 구조를 활용하면, 애플리케이션의 기능 확장 및 유지보수가 용이해집니다. 부모 클래스에서 변경사항이 발생하면, 이를 상속받은 모든 자식 클래스에 자동으로 적용됨.
+## 🌟 비전공자를 위한 추가 설명:
+##### 상속은 마치 가족 간에 유전 정보를 전달하는 것과 비슷. 부모로부터 특정 특성(속성과 메서드)을 물려받아, 자식은 그 특성을 기반으로 새로운 특성을 추가하거나 변경할 수 있음. 즉, 상속을 통해 기존의 '레시피'를 바탕으로 새로운 '요리'를 만드는 것처럼, `Ext JS`에서도 `extend` 속성을 사용하여 기존 클래스의 '레시피'를 활용하고, 여기에 새로운 기능을 '추가'하거나 '변경'하여 새로운 클래스를 '만들어낼' 수 있음.
+---
+# 🌈 Ext JS MVC 아키텍쳐 (MVC Architecture) 🏛️🖥️
+
+
+
+
+
+
 
 
 
