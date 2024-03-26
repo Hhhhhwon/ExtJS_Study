@@ -1204,9 +1204,9 @@ C:\tomcat\bin>startup
 ### 🏗️ Ext JS MVC Architecture
 #### `Ext JS` 애플리케이션이 시작되면, 다음과 같은 구성요소로 이루어진 `MVC` 아키텍처를 따름:
 
-모델: 데이터 구조
-```javascript
+#### 모델: 데이터 구조
 
+```javascript
 // '사람'을 나타내는 모델을 정의. 이름, 이메일, 전화번호 필드를 포함.
 Ext.define('App.model.Person', {
     extend: 'Ext.data.Model', // Ext.data.Model을 상속.
@@ -1221,7 +1221,6 @@ Ext.define('App.model.Person', {
 
 #### 뷰(View): 사용자 인터페이스
 ```javascript
-
 // 사람 목록을 보여주는 그리드 패널 뷰를 정의합니다.
 Ext.define('App.view.PersonList', {
     extend: 'Ext.grid.Panel', // Ext.grid.Panel을 상속받습니다.
@@ -1237,7 +1236,6 @@ Ext.define('App.view.PersonList', {
 ```
 #### 컨트롤러(Controller):
 ```javascript
-Copy code
 // PersonList 뷰에서의 상호작용을 처리하는 컨트롤러를 정의합니다.
 Ext.define('App.controller.Person', {
     extend: 'Ext.app.Controller',
@@ -1287,17 +1285,17 @@ Ext.define('App.store.Persons', {
 // "Ext.define" 메서드를 사용하여 'MvcApp.view.main.Main'이라는 이름의 새로운 클래스를 정의.
 Ext.define('MvcApp.view.main.Main', {
     // "extend" 키워드를 사용하여 Ext JS의 'Ext.panel.Panel' 클래스를 상속받음.
-    // 이는 Main 클래스가 Panel 클래스의 모든 속성과 메서드를 사용할 수 있게 해줍니다.
+    // 이는 Main 클래스가 Panel 클래스의 모든 속성과 메서드를 사용할 수 있게 해줌.
     extend: 'Ext.panel.Panel',
     
-    // "xtype"은 이 클래스의 별칭을 설정합니다. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성할 수 있습니다.
+    // "xtype"은 이 클래스의 별칭을 설정합니다. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성.
     xtype: 'main',
  // alais:'widget.main',
-    // "title" 속성은 이 패널의 상단에 표시될 텍스트를 정의합니다.
+    // "title" 속성은 이 패널의 상단에 표시될 텍스트를 정의.
     title:'MVC 아키텍쳐',
     
-    // "layout" 설정을 통해 이 패널 내부에 포함될 컴포넌트들의 배치 방식을 정의합니다.
-    // 여기서는 'vbox'를 사용하여 수직으로 컴포넌트들을 배치합니다.
+    // "layout" 설정을 통해 이 패널 내부에 포함될 컴포넌트들의 배치 방식을 정의.
+    // 여기서는 'vbox'를 사용하여 수직으로 컴포넌트들을 배치.
     layout: {
         type: 'vbox'
     },
@@ -1465,6 +1463,7 @@ Ext.define('MvcApp.controller.AppController', {
 - ###### **용도**: 복잡한 버그를 진단하거나 애플리케이션의 특정 부분에서 코드 실행을 멈추고 싶을 때 유용.
 - ###### **예시**: `debugger;`는 코드가 이 지점에 도달하면 실행을 일시 중지하고 개발자 도구에서 디버깅을 시작.
 ---
+
 
 
 
