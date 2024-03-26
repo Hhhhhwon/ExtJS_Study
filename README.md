@@ -1145,7 +1145,328 @@ Ext.define('MyApp.view.CustomPanel', {
 ## 🌟 비전공자를 위한 추가 설명:
 ##### 상속은 마치 가족 간에 유전 정보를 전달하는 것과 비슷. 부모로부터 특정 특성(속성과 메서드)을 물려받아, 자식은 그 특성을 기반으로 새로운 특성을 추가하거나 변경할 수 있음. 즉, 상속을 통해 기존의 '레시피'를 바탕으로 새로운 '요리'를 만드는 것처럼, `Ext JS`에서도 `extend` 속성을 사용하여 기존 클래스의 '레시피'를 활용하고, 여기에 새로운 기능을 '추가'하거나 '변경'하여 새로운 클래스를 '만들어낼' 수 있음.
 ---
+
 # 🌈 Ext JS MVC 아키텍쳐 (MVC Architecture) 🏛️🖥️
+### 프로젝트 생성 📂
+
+#### CMD 열고 Workspace 이동 📂
+###### CMD (Command Prompt)를 열고 Ext JS 애플리케이션이 저장될 작업 공간으로 이동.
+
+```plaintext
+C:\>cd WorkspaceExtjs
+```
+### 애플리케이션 생성 🛠️
+#### `sencha` 명령어를 사용하여 `Ext JS SDK`를 기반으로 새 `MVC` 애플리케이션을 생성.
+
+```plaintext
+
+C:\WorkspaceExtjs>sencha -sdk C:\SenchaSdk generate app classic MvcApp ./MvcApp
+```
+#### 개발 모드로 빌드 🏗️
+##### 생성된 MvcApp 폴더로 이동한 후, 개발 모드로 애플리케이션을 빌드.
+
+```plaintext
+
+C:\WorkspaceExtjs\MvcApp>sencha app build development
+```
+
+### 🌐 애플리케이션을 개발 서버에 배포
+#### 필요한 라이브러리 수정 📚
+##### 애플리케이션에 필요한 추가 라이브러리나 설정 변경이 필요한 경우, app.json 파일에서 수정.
+
+### MvcApp 폴더의 내용 복사 📋
+###### MvcApp 폴더에 있는 모든 내용을 선택하여 복사.
+
+### 톰캣 개발 서버에 배포 🚀
+##### 톰캣(Tomcat) 개발 서버의 webapps\ROOT 폴더로 이동. 기존에 있는 WEB-INF 폴더를 제외한 모든 파일과 폴더를 삭제하고, MvcApp 폴더에서 복사한 내용을 붙여넣고 톰캣 을 실행.
+
+```plaintext
+C:\tomcat\webapps\ROOT> (MvcApp 내용 붙여넣기)
+```
+```plaintext
+C:\tomcat\bin>startup
+```
+#### localhost:8080 접속
+##### 이 과정을 통해 `Ext JS` 기반의 `MVC `애플리케이션을 개발하고, 개발 서버에 배포할 수 있음. 🌍🔧
+###### Main.js 에 iconCls: 'x-fa fa-th-list' 로 수정 (아이콘이 꺠진다면)
+---
+
+
+## 🚀 Ext JS 애플리케이션 시작 프로세스
+- #####  index.html 호출: 애플리케이션의 시작점인 index.html이 브라우저에 의해 먼저 호출. 🌐
+
+- ##### bootstrap.js 호출: index.html은 bootstrap.js를 호출하여 애플리케이션의 초기 설정을 로드.📂
+
+- ##### bootstrap.json 호출: bootstrap.js는 다음으로 bootstrap.json을 호출하여 애플리케이션에 필요한 패키지들과 경로들을 정의. 🛠️
+
+- ##### app.js 호출: 마지막으로, app.js가 호출되며 여기서 mainView: 'MvcApp.view.main.Main'으로 첫 페이지를 정의. 📌
+
+### 🏗️ Ext JS MVC Architecture
+#### `Ext JS` 애플리케이션이 시작되면, 다음과 같은 구성요소로 이루어진 `MVC` 아키텍처를 따름:
+
+모델: 데이터 구조
+```javascript
+
+// '사람'을 나타내는 모델을 정의. 이름, 이메일, 전화번호 필드를 포함.
+Ext.define('App.model.Person', {
+    extend: 'Ext.data.Model', // Ext.data.Model을 상속.
+    fields: [
+        {name: 'name', type: 'string'},
+        {name: 'email', type: 'string'},
+        {name: 'phone', type: 'string'}
+    ]
+    // 모델은 데이터 유효성 검사, 연관관계, 사용자 정의 메서드를 포함할 수 있음
+});
+```
+
+#### 뷰(View): 사용자 인터페이스
+```javascript
+
+// 사람 목록을 보여주는 그리드 패널 뷰를 정의합니다.
+Ext.define('App.view.PersonList', {
+    extend: 'Ext.grid.Panel', // Ext.grid.Panel을 상속받습니다.
+    title: '사람 목록',
+    store: 'Persons', // 'Persons' 스토어와 바인딩합니다.
+    // 컬럼은 모델 필드와 일치합니다.
+    columns: [
+        {text: '이름', dataIndex: 'name'},
+        {text: '이메일', dataIndex: 'email'},
+        {text: '전화번호', dataIndex: 'phone'}
+    ]
+});
+```
+#### 컨트롤러(Controller):
+```javascript
+Copy code
+// PersonList 뷰에서의 상호작용을 처리하는 컨트롤러를 정의합니다.
+Ext.define('App.controller.Person', {
+    extend: 'Ext.app.Controller',
+    // UI 상호작용을 위한 이벤트 리스너를 설정합니다.
+    init: function() {
+        this.control({
+            'personlist': { // 뷰의 xtype 또는 id를 참조
+                itemclick: this.editPerson // 아이템 클릭 시 호출될 메서드
+            }
+        });
+    },
+    // 아이템 클릭 이벤트를 처리할 메서드를 정의합니다.
+    editPerson: function(grid, record) {
+        console.log(record.get('name') + '을 클릭했습니다.');
+        // 사람 정보 수정 로직 추가...
+    }
+});
+```
+#### Store(스토어):
+```javascript
+
+// 사람 모델의 인스턴스를 저장하고 관리할 스토어를 정의합니다.
+Ext.define('App.store.Persons', {
+    extend: 'Ext.data.Store',
+    model: 'App.model.Person', // 저장할 모델 지정
+    // 서버에서 로드하는 대신 데모를 위한 인라인 데이터
+    data: [
+        {name: 'Jean Luc', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111"},
+        // 추가 인물 객체...
+    ]
+});
+```
+
+
+#### MVC 아키텍처를 통해 `Ext JS` 애플리케이션은 잘 조직되고, 유지보수가 용이하며, 확장성 있는 구조를 가질 수 있습니다.
+
+- ##### Model (모델): 데이터와 애플리케이션의 비즈니스 로직을 담당. 데이터의 유효성 검사, 데이터 변환, 데이터와 관련된 로직 등을 포함할 수 있음. 모델은 데이터의 상태를 나타내며, 변경 사항이 발생하면 이를 뷰나 컨트롤러에 알림.
+- ##### Views:사용자 인터페이스(UI) 구성 요소. 애플리케이션의 모델 데이터를 사용자에게 시각적으로 표현하며, 사용자의 입력을 받음. 뷰는 HTML, CSS, Ext JS의 UI 컴포넌트로 구성될 수 있음.
+- ##### Controllers (컨트롤러): 사용자의 입력에 반응하여 모델과 뷰 사이의 상호작용을 조정. 컨트롤러는 애플리케이션의 이벤트 흐름을 관리하며, 사용자의 입력에 따라 모델을 업데이트하고 뷰를 통해 변화를 반영.
+- ##### Stores (스토어): 모델의 인스턴스를 저장하고, 데이터를 관리 및 조작하는 방법을 제공. 스토어는 서버로부터 데이터를 로드하고, 필터링, 정렬, 그룹핑 등의 데이터 조작 작업을 수행할 수 있음.
+- ##### Controller는 애플리케이션의 핵심: Controller는 애플리케이션의 이벤트 흐름과 비즈니스 로직을 제어하는 중심 역할. 사용자의 행동에 따라 모델을 업데이트하고, 뷰를 통해 변화를 반영. 🎮👨‍🔬
+---
+### 📝 Main.js 수정 실습
+##### `Ext.define('MvcApp.view.main.Main', {...});` 코드를 수정하여, 간단한 UI를 구성. 아래는 수정된 코드 예시:
+
+```javascript
+// "Ext.define" 메서드를 사용하여 'MvcApp.view.main.Main'이라는 이름의 새로운 클래스를 정의.
+Ext.define('MvcApp.view.main.Main', {
+    // "extend" 키워드를 사용하여 Ext JS의 'Ext.panel.Panel' 클래스를 상속받음.
+    // 이는 Main 클래스가 Panel 클래스의 모든 속성과 메서드를 사용할 수 있게 해줍니다.
+    extend: 'Ext.panel.Panel',
+    
+    // "xtype"은 이 클래스의 별칭을 설정합니다. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성할 수 있습니다.
+    xtype: 'main',
+ // alais:'widget.main',
+    // "title" 속성은 이 패널의 상단에 표시될 텍스트를 정의합니다.
+    title:'MVC 아키텍쳐',
+    
+    // "layout" 설정을 통해 이 패널 내부에 포함될 컴포넌트들의 배치 방식을 정의합니다.
+    // 여기서는 'vbox'를 사용하여 수직으로 컴포넌트들을 배치합니다.
+    layout: {
+        type: 'vbox'
+    },
+    
+    // "bodyPadding"은 패널 내부의 여백을 설정합니다. 여기서는 상하좌우 모두 10px로 설정.
+    bodyPadding:'10 10 10 10',
+    
+    // "items" 배열은 이 패널에 포함될 자식 컴포넌트들을 정의.
+    items: [{
+        // 첫 번째 컴포넌트는 "textfield". 사용자로부터 텍스트 입력을 받을 수 있음.
+        xtype: 'textfield',     
+        fieldLabel: '제목',    // "fieldLabel"은 텍스트 필드 옆에 표시될 라벨을 정의.
+        name: 'subject1'        // "name" 속성을 통해 이 텍스트 필드를 식별할 수 있는 이름을 설정.
+    }, {
+        // 두 번째 컴포넌트는 "button"입니다. 클릭 가능한 버튼을 생성.
+        xtype: 'button',        
+        text: '전달',           // "text" 속성은 버튼에 표시될 텍스트를 정의.
+    }, {
+        // 세 번째 컴포넌트도 "textfield". 다른 텍스트 필드의 입력값을 표시할 수 있음.
+        xtype: 'textfield',     
+        fieldLabel: '전달받은제목',
+        name: 'subject2'
+    }]
+});
+```
+### xtype과 alias 설명
+
+- **xtype: 'main'**
+  - `xtype`은 Ext JS에서 컴포넌트를 간단하고 직관적으로 참조할 수 있는 식별자.
+  - 예: `{ xtype: 'main' }`을 통해 이 컴포넌트의 인스턴스를 쉽게 생성할 수 있음.
+  - 주로 UI 컴포넌트 생성 시 사용.
+
+- **alias: 'widget.main'**
+  - `alias`는 `xtype`과 유사하게 컴포넌트에 별칭을 부여하는 방식이지만, `widget.` 접두사를 사용해 UI 컴포넌트임을 명시.
+  - `Ext.widget('main')`과 같이 사용하여 컴포넌트를 생성할 수 있음.
+  - `alias`는 모델, 스토어, 플러그인 등 다양한 Ext JS 구성 요소에 보다 일반적으로 사용될 수 있음.
+
+### 요약
+- `xtype`과 `alias`는 모두 `Ext JS`에서 컴포넌트를 참조하고 생성하기 위한 유용한 방법.
+- 둘 다 컴포넌트의 간결한 참조를 제공하지만, `alias`는 `xtype`보다 넓은 범위의 구성 요소에 적용될 수 있음.
+- `xtype: 'main'`과 `alias: 'widget.main'` 모두 해당 컴포넌트를 쉽게 참조하고 인스턴스를 생성할 수 있게 해줌.
+---
+### 🌐 Ext JS MVC 아키텍처 실습 설명
+
+Ext JS MVC 아키텍처에서는 뷰(`View`)에 직접 이벤트 핸들러를 배치하는 대신, 컨트롤러(`Controller`)를 통해 애플리케이션의 이벤트를 중앙에서 관리합니다. 이 방법은 애플리케이션의 비즈니스 로직과 사용자 인터페이스를 분리하여, 각각 독립적으로 관리할 수 있게 해 줍니다.
+
+#### 📝 MVC 아키텍처의 핵심 구성 요소
+- **모델(Model)**: 데이터와 관련된 로직을 처리.
+- **뷰(View)**: 사용자에게 정보를 보여 주고, 사용자의 입력을 받음.
+- **컨트롤러(Controller)**: 사용자의 입력에 반응하여 모델을 업데이트하고, 그 결과를 뷰에 반영.
+
+#### 🔧 애플리케이션 설정 (`application.js`)
+`MvcApp` 애플리케이션의 전반적인 설정은 `application.js`에서 이루어짐. 여기서 애플리케이션의 이름을 정의하고, 사용할 컨트롤러들을 등록.
+
+```javascript
+Ext.define('MvcApp.Application', {
+    extend: 'Ext.app.Application',  // 'Ext.app.Application' 클래스를 상속받아 새 애플리케이션 클래스를 정의. 이는 애플리케이션의 기본 구조와 생명주기를 관리.
+    
+    name: 'MvcApp',  // 애플리케이션의 고유 이름을 설정. 이 이름은 애플리케이션 내에서 자원(리소스)을 참조할 때 사용.
+    
+    controllers:['AppController'],  // 이 애플리케이션에 사용될 컨트롤러들을 배열로 등록. 컨트롤러는 애플리케이션의 로직을 관리하는 주체.
+    
+    quickTips: false,  // 'quickTips' 설정을 false로 하여 기본적으로 빠른 도움말(툴팁) 기능을 비활성화.
+    platformConfig: {  // 특정 플랫폼(여기서는 'desktop')에 대한 설정을 지정.
+        desktop: {
+            quickTips: true  // 데스크톱 환경에서는 빠른 도움말(툴팁) 기능을 활성화.
+        }
+    },
+
+    // 애플리케이션이 업데이트 되었을 때 사용자에게 알리고, 페이지를 새로고침할지 여부를 묻는 메서드.
+    onAppUpdate: function () {
+        Ext.Msg.confirm('Application Update', 'This application has an update, reload?',
+            function (choice) {
+                if (choice === 'yes') {
+                    window.location.reload();  // 사용자가 '예'를 선택하면, 페이지를 새로고침하여 애플리케이션을 업데이트 함.
+                }
+            }
+        );
+    }
+});
+
+```
+
+- ######  Ext JS에서 클래스를 정의할 때, "extend" 키워드를 사용.
+- ###### "extend" 키워드의 역할은 특정 클래스를 "상속" 받는 것. 즉, 해당 클래스의 모든 기능을 "물려받아" 사용할 수 있게 됨.
+
+- ######  여기서 'Ext.app.Application'은 Ext JS 프레임워크에서 제공하는 애플리케이션의 기본 클래스.
+- ###### 이 클래스는 Ext JS 애플리케이션을 구성할 때 필요한 기본적인 설정과 기능들을 포함하고 있음.
+- ######  예를 들어, 애플리케이션의 시작점을 정의하거나, 글로벌 이벤트를 관리하고, 라우팅 설정을 할 수 있는 기능들이 이 클래스에 포함되어 있음.
+
+- ###### "extend: 'Ext.app.Application'"이라고 작성함으로써,
+- ######  우리는 'Ext.app.Application' 클래스의 모든 기능을 상속받는 새로운 애플리케이션 클래스를 정의하게 됨.
+- ######  이렇게 함으로써, 기본적인 애플리케이션 기능은 물론이고, 우리만의 추가적인 설정이나 로직을 구현할 수 있게 됨.
+
+- ######  상속을 통해 기존의 클래스 기능을 재사용하고, 필요에 따라 확장하여 사용할 수 있다는 점은 객체지향 프로그래밍의 큰 장점 중 하나.
+- ######  이를 통해 코드의 중복을 줄이고, 유지보수성을 높이며, 애플리케이션의 구조를 체계적으로 관리할 수 있음.
+---
+
+
+### 📂 컨트롤러 설정 (AppController.js)
+#### `app/controller` 폴더 내에 `AppController.js`를 생성하여 애플리케이션의 이벤트와 로직을 중앙에서 관리. 이 컨트롤러는 뷰의 이벤트를 감지하고 처리하는 역할을 담당.
+
+### 🚀 애플리케이션 실행 흐름
+- ###### 사용자는 `View`를 통해 애플리케이션과 상호작용함.
+- ###### 발생한 이벤트는 `Controller`에 의해 처리됨.
+- ###### Controller는 필요에 따라 `Model`을 업데이트하고, 그 결과를 `View`에 반영하여 사용자에게 피드백을 제공.
+- ###### 이 구조를 통해 `Ext JS` 애플리케이션은 더욱 체계적이고 관리하기 쉬운 코드베이스를 가질 수 있으며, 크고 복잡한 애플리케이션 개발에 적합한 아키텍처를 제공. 🌟
+---
+
+### Ext JS Controller 예제 해석 📚
+```javascript
+// 'MvcApp.controller.AppController'라는 이름의 클래스를 정의. 이 클래스는 Ext JS의 기본 컨트롤러인 'Ext.app.Controller'를 상속받아 만들어짐.
+Ext.define('MvcApp.controller.AppController', {
+    // 'Ext.app.Controller'를 상속받음으로써, MVC 패턴의 컨트롤러로서 기능할 수 있는 다양한 메소드와 속성들을 이용할 수 있게 됨.
+    extend: 'Ext.app.Controller',
+
+    // refs는 컨트롤러가 관리할 뷰의 컴포넌트들에 대한 참조를 설정하는 부분. 이를 통해 컨트롤러 내의 다른 메소드에서 해당 컴포넌트들을 쉽게 참조할 수 있음.
+    refs: {
+        // 'main textfield[name=subject1]' 선택자를 통해, xtype이 'main'이고, name 속성이 'subject1'인 텍스트 필드 컴포넌트를 찾아 'subject1'이라는 이름으로 참조.
+        subject1: 'main textfield[name=subject1]',
+        // 마찬가지로 'subject2'이라는 이름으로 'main textfield[name=subject2]' 선택자에 해당하는 텍스트 필드 컴포넌트를 참조.
+        subject2: 'main textfield[name=subject2]',
+    },
+
+    // control 객체는 이벤트 리스너를 설정하는 부분입니다. 특정 이벤트가 발생했을 때 실행될 함수를 지정할 수 있음.
+    control: {
+        // 'main button[name=btnSend]' 선택자에 해당하는 버튼이 클릭되었을 때 'onSendClick' 메소드를 실행하도록 설정.
+        'main button[name=btnSend]': {
+            click: 'onSendClick'
+        }
+    },
+
+    // 'onSendClick' 메소드는 버튼 클릭 이벤트가 발생했을 때 호출.
+    onSendClick: function() {
+        // 현재 함수에 전달된 인자들을 콘솔에 출력. 이는 디버깅 시 유용하게 사용될 수 있음.
+        console.log('arguments', arguments);
+        // 디버거를 활성화하여, 이 코드 지점에서 스크립트의 실행을 일시 중지합니다. 이를 통해 개발자 도구에서 변수의 상태 등을 확인할 수 있음.
+        debugger;
+        // 'subject1' 참조를 통해 해당 텍스트 필드의 현재 값을 가져옴.
+        let value = this.getSubject1().getValue();
+        // 가져온 값을 'subject2' 참조를 통해 다른 텍스트 필드의 값으로 설정.
+        this.getSubject2().setValue(value);
+    }
+})
+```
+### 📌 Ext JS Controller의 핵심 요소 설명
+
+#### `refs` 속성 사용하기
+- ###### **개념**: `refs`는 컨트롤러에서 관리할 뷰 컴포넌트들에 대한 참조를 설정하는 속성. 
+- ###### **용도**: 이를 사용함으로써, 컨트롤러 내에서 특정 컴포넌트를 쉽게 찾아내고 조작할 수 있음. 이는 코드의 가독성과 유지보수성을 크게 향상시킴.
+- ###### **예시**: `'main textfield[name=subject1]'`은 main 뷰 내의 name 속성이 'subject1'인 텍스트 필드를 찾아 참조.
+
+#### `control` 속성으로 이벤트 핸들링
+- ###### **개념**: `control`은 컨트롤러가 관리하는 뷰 컴포넌트의 이벤트를 핸들링하는 속성.
+- ###### **용도**: 이벤트 리스너를 컴포넌트 선택자와 함께 정의하여, MVC 패턴의 핵심인 모델-뷰-컨트롤러 간의 상호작용을 효율적으로 관리.
+- ###### **예시**: `'main button[name=btnSend]': {click: 'onSendClick'}`은 name 속성이 'btnSend'인 버튼이 클릭되었을 때 `onSendClick` 메소드를 실행.
+
+#### `console.log`로 디버깅하기
+- ###### **개념**: `console.log`는 자바스크립트에서 가장 기본적이고 강력한 디버깅 도구.
+- ###### **용도**: 개발자 콘솔에 메시지를 출력하여 애플리케이션의 실행 흐름을 파악하고, 문제를 진단하는 데 사용됨.
+- ###### **예시**: `console.log('arguments', arguments);`는 함수에 전달된 인자들을 콘솔에 출력.
+
+#### `debugger`를 사용한 디버깅
+- ###### **개념**: `debugger`는 스크립트 실행을 특정 지점에서 중단하고, 개발자 도구에서 변수 상태를 확인하거나 단계별 실행을 수행할 수 있게 함.
+- ###### **용도**: 복잡한 버그를 진단하거나 애플리케이션의 특정 부분에서 코드 실행을 멈추고 싶을 때 유용.
+- ###### **예시**: `debugger;`는 코드가 이 지점에 도달하면 실행을 일시 중지하고 개발자 도구에서 디버깅을 시작.
+---
+
+
 
 
 
