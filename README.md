@@ -1288,7 +1288,7 @@ Ext.define('MvcApp.view.main.Main', {
     // 이는 Main 클래스가 Panel 클래스의 모든 속성과 메서드를 사용할 수 있게 해줌.
     extend: 'Ext.panel.Panel',
     
-    // "xtype"은 이 클래스의 별칭을 설정합니다. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성.
+    // "xtype"은 이 클래스의 별칭을 설정. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성.
     xtype: 'main',
  // alais:'widget.main',
     // "title" 속성은 이 패널의 상단에 표시될 텍스트를 정의.
@@ -1300,7 +1300,7 @@ Ext.define('MvcApp.view.main.Main', {
         type: 'vbox'
     },
     
-    // "bodyPadding"은 패널 내부의 여백을 설정합니다. 여기서는 상하좌우 모두 10px로 설정.
+    // "bodyPadding"은 패널 내부의 여백을 설정. 여기서는 상하좌우 모두 10px로 설정.
     bodyPadding:'10 10 10 10',
     
     // "items" 배열은 이 패널에 포함될 자식 컴포넌트들을 정의.
