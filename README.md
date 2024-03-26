@@ -9,6 +9,7 @@
 - 🌈[Ext JS 이벤트와 컴포넌트 접근](#🌟-ext-js-이벤트와-컴포넌트-접근🌈)
 - 🌈[Ext JS 클래스 정의와 상속](#🌟-ext-js-클래스-정의와-상속🌈)
 - 🌈[Ext JS MVC 아키텍쳐(Acrhitecture)](#🌈-ext-js-mvc-아키텍쳐-mvc-architecture-🏛️🖥️) 
+- 🌈[Ext JS MVC 아키텍쳐(Acrhitecture)2](#🌈-ext-js-mvc-아키텍쳐-mvc-architecture-ii-🏛️-스토어-사용)
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
@@ -1159,14 +1160,12 @@ C:\>cd WorkspaceExtjs
 #### `sencha` 명령어를 사용하여 `Ext JS SDK`를 기반으로 새 `MVC` 애플리케이션을 생성.
 
 ```plaintext
-
 C:\WorkspaceExtjs>sencha -sdk C:\SenchaSdk generate app classic MvcApp ./MvcApp
 ```
 #### 개발 모드로 빌드 🏗️
 ##### 생성된 MvcApp 폴더로 이동한 후, 개발 모드로 애플리케이션을 빌드.
 
 ```plaintext
-
 C:\WorkspaceExtjs\MvcApp>sencha app build development
 ```
 
@@ -1256,7 +1255,6 @@ Ext.define('App.controller.Person', {
 ```
 #### Store(스토어):
 ```javascript
-
 // 사람 모델의 인스턴스를 저장하고 관리할 스토어를 정의합니다.
 Ext.define('App.store.Persons', {
     extend: 'Ext.data.Store',
@@ -1290,7 +1288,7 @@ Ext.define('MvcApp.view.main.Main', {
     
     // "xtype"은 이 클래스의 별칭을 설정. 이 별칭을 통해 나중에 이 클래스의 인스턴스를 쉽게 생성.
     xtype: 'main',
- // alais:'widget.main',
+ // alias:'widget.main',
     // "title" 속성은 이 패널의 상단에 표시될 텍스트를 정의.
     title:'MVC 아키텍쳐',
     
@@ -1310,7 +1308,7 @@ Ext.define('MvcApp.view.main.Main', {
         fieldLabel: '제목',    // "fieldLabel"은 텍스트 필드 옆에 표시될 라벨을 정의.
         name: 'subject1'        // "name" 속성을 통해 이 텍스트 필드를 식별할 수 있는 이름을 설정.
     }, {
-        // 두 번째 컴포넌트는 "button"입니다. 클릭 가능한 버튼을 생성.
+        // 두 번째 컴포넌트는 "button". 클릭 가능한 버튼을 생성.
         xtype: 'button',        
         text: '전달',           // "text" 속성은 버튼에 표시될 텍스트를 정의.
     }, {
@@ -1420,7 +1418,7 @@ Ext.define('MvcApp.controller.AppController', {
         subject2: 'main textfield[name=subject2]',
     },
 
-    // control 객체는 이벤트 리스너를 설정하는 부분입니다. 특정 이벤트가 발생했을 때 실행될 함수를 지정할 수 있음.
+    // control 객체는 이벤트 리스너를 설정하는 부분. 특정 이벤트가 발생했을 때 실행될 함수를 지정할 수 있음.
     control: {
         // 'main button[name=btnSend]' 선택자에 해당하는 버튼이 클릭되었을 때 'onSendClick' 메소드를 실행하도록 설정.
         'main button[name=btnSend]': {
@@ -1463,6 +1461,325 @@ Ext.define('MvcApp.controller.AppController', {
 - ###### **용도**: 복잡한 버그를 진단하거나 애플리케이션의 특정 부분에서 코드 실행을 멈추고 싶을 때 유용.
 - ###### **예시**: `debugger;`는 코드가 이 지점에 도달하면 실행을 일시 중지하고 개발자 도구에서 디버깅을 시작.
 ---
+
+# 🌈 Ext JS MVC 아키텍쳐 (MVC Architecture) II 🏛️ (스토어 사용)
+
+## 🌟 Ext JS 모델 상세 설명
+
+### 🛠️ Base 모델 정의
+```javascript
+Ext.define('MvcApp.model.Base', {
+    extend: 'Ext.data.Model', // Ext JS의 기본 데이터 모델을 확장.
+    schema: {
+        namespace: 'MvcApp.model' // 이 모델과 상속받는 모델들의 네임스페이스를 설정.
+    }
+});
+```
+- #### 네임스페이스(namespace): 코드 내에서 모델을 구분하기 위한 고유 경로입니다. `MvcApp.model`로 설정함으로써, 이 네임스페이스 아래에서 모델 이름이 충돌하지 않도록 함.
+### 📘 Personnel 모델 정의
+```javascript
+Ext.define('MvcApp.model.Personnel', {
+    extend: 'MvcApp.model.Base', // Base 모델을 상속받아 공통 설정을 재사용.
+    fields: [
+        'name', 'email', 'phone' // 이 모델이 다루는 데이터 필드를 정의.
+    ]
+});
+```
+- #### 모델 상속: Base 모델에서 정의한 네임스페이스 설정을 상속받아, `Personnel` 모델도 동일한 네임스페이스 안에 위치하게 됨.
+- #### 데이터 필드`(fields)`: 모델이 다루는 구체적인 데이터의 종류를 나타냄. 여기서는 이름, 이메일, 전화번호를 다루는 예시를 보여줌.
+#### 🤔 왜 이렇게 구조를 나누는가?
+- #### 재사용성: `Base` 모델에 공통적인 설정(예: 네임스페이스)을 정의함으로써, 여러 모델에서 이를 재사용할 수 있습니다. 이는 코드의 중복을 줄이고 유지보수를 용이하게 함.
+- #### 구조화: 데이터 구조를 명확히 정의하고, 관련 로직을 모델 내에 캡슐화함으로써, 데이터 관리의 복잡성을 줄이고 애플리케이션의 가독성과 유지보수성을 향상시킴.
+### 💡 모델 사용의 이점
+- #### 데이터 바인딩: 모델을 통해 정의된 데이터 구조를 `UI` 컴포넌트와 쉽게 바인딩할 수 있어, 데이터의 변경이 `UI`에 자동으로 반영됨.
+- #### 데이터 관리: 서버로부터 데이터를 로딩하거나, 데이터를 서버에 저장하는 과정에서 모델을 통해 데이터의 유효성 검사, 변환 등을 손쉽게 할 수 있음.
+#### 이렇게 `Base` 모델과 `Personnel` 모델을 통해 `Ext JS`에서 데이터의 구조와 관리 방법에 대한 기초를 다질 수 있음. 🚀
+
+## 🗃️ Ext JS 스토어: MvcApp.store.Personnel 상세 설명
+#### 스토어란?
+##### 스토어`(Store)`는 `Ext JS`에서 데이터를 관리하는 핵심 구성요소. 데이터 컬렉션을 관리하며, 데이터를 불러오고, 필터링하고, 정렬하는 등의 작업을 수행. 스토어는 모델(Model)과 연결되어, 모델이 정의한 구조에 따라 데이터를 저장.
+
+### MvcApp.store.Personnel 스토어 설명
+```javascript
+Ext.define('MvcApp.store.Personnel', {
+    extend: 'Ext.data.Store',  // Ext.data.Store를 상속받아 스토어 기능을 상속.
+
+    alias: 'store.personnel',  // 'store.personnel' 별칭으로 스토어를 쉽게 참조할 수 있음.
+
+    model: 'MvcApp.model.Personnel',  // 이 스토어에 저장될 데이터의 구조를 정의한 'MvcApp.model.Personnel' 모델을 사용.
+
+    data: { items: [
+        // 스토어에 초기에 저장될 데이터입니다. 실제 애플리케이션에서는 서버로부터 데이터를 받아옴.
+        { name: 'Jean Luc', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111" },
+        { name: 'Worf', email: "worf.moghsson@enterprise.com", phone: "555-222-2222" },
+        { name: 'Deanna', email: "deanna.troi@enterprise.com", phone: "555-333-3333" },
+        { name: 'Data', email: "mr.data@enterprise.com", phone: "555-444-4444" }
+    ]},
+
+    proxy: {
+        type: 'memory',  // 'memory' 타입의 프록시를 사용하여, 데이터를 메모리에 임시로 저장합니다. 실제 서버와의 통신이 필요할 경우, 이 부분을 변경.
+        reader: {
+            type: 'json',  // 데이터를 읽어올 때 JSON 형식으로 처리.
+            rootProperty: 'items'  // JSON 데이터 중 items 키에 해당하는 데이터를 스토어 데이터로 사용.
+        }
+    }
+});
+```
+### 메모리 프록시(memory proxy)란?
+- #### 메모리 프록시는 데이터를 브라우저의 메모리 안에서만 관리하는 방식입니다. 개발 과정에서 초기 데이터를 설정하거나, 테스트 용도로 사용됩니다. 실제 서비스에서는 서버와의 통신을 위해 다른 타입의 프록시(예: `ajax, rest` 등)를 사용합니다.
+
+### 스토어의 중요성
+- #### 스토어는 `Ext JS`에서 데이터 관리의 핵심으로, `UI` 컴포넌트(예: 그리드(`grid`), 리스트(`List`) 등)와 데이터를 연결하는 역할을 함. 데이터가 변경될 때, 연결된 `UI` 컴포넌트들은 자동으로 업데이트되어 반응형 `UI`를 구현할 수 있음.
+
+###### 🚀 이러한 구조는 데이터 관리를 체계적으로 할 수 있게 하며, 애플리케이션의 유지보수성과 재사용성을 높여줌.
+---
+```javascript
+Ext.define('MvcApp.Application', {
+    extend: 'Ext.app.Application',
+
+    name: 'MvcApp',
+    controller:['AppController'],
+    models:['Personnel'],
+    stores:['Personnel'],
+
+    quickTips: false,
+    platformConfig: {
+        desktop: {
+            quickTips: true
+        }
+    },
+    // 애플리케이션이 업데이트 되었을 때 사용자에게 알리고, 페이지를 새로고침할지 여부를 묻는 메서드.
+    onAppUpdate: function () {
+        Ext.Msg.confirm('Application Update', 'This application has an update, reload?',
+            function (choice) {
+                if (choice === 'yes') {
+                    window.location.reload();  // 사용자가 '예'를 선택하면, 페이지를 새로고침하여 애플리케이션을 업데이트 함.
+                }
+            }
+        );
+    }
+});
+```
+### 🚀 Ext JS Application.js 해설
+
+#### `Ext.define('MvcApp.Application', {...})`에서, 우리는 Ext JS 프레임워크를 사용하여 웹 애플리케이션의 핵심 구조를 정의. 
+
+🔍 **Application 클래스 정의**
+- **extend: 'Ext.app.Application'**:
+  - `'Ext.app.Application'` 클래스를 상속받아, 애플리케이션의 시작점을 정의. 이 클래스는 애플리케이션의 초기화, 생명주기 관리 등을 담당.
+  
+- **name: 'MvcApp'**:
+  - 애플리케이션에 고유한 이름을 지정. 이 이름을 통해 애플리케이션 내의 리소스를 찾을 수 있게 됨.
+  
+- **controllers: ['AppController']**:
+  - 사용할 컨트롤러를 배열로 등록. 여기서 컨트롤러는 사용자의 입력과 애플리케이션의 데이터 처리 로직을 중개하는 역할을 함.
+
+🔍 **모델과 스토어 설정**
+- **models: ['Personnel']** 와 **stores: ['Personnel']**:
+  - 이 부분에서는 애플리케이션에서 사용될 모델과 스토어를 등록합니다. `'Personnel'`이라고 지정된 부분은 실제로 `app/model/Personnel.js`와 `app/store/Personnel.js` 파일을 참조.
+  - 모델은 애플리케이션에서 사용되는 데이터의 구조를 정의하는 역할을 하며, 스토어는 이러한 데이터 모델의 인스턴스를 저장하고 관리하는 컨테이너 역할을 함.
+  - `alias` 속성은 스토어를 더 쉽게 참조할 수 있도록 별칭을 제공. 예를 들어, `'store.personnel'`이라고 설정하면, `Ext.getStore('personnel')`을 통해 전역에서 해당 스토어에 접근할 수 있음.
+
+🔍 **기타 설정과 메서드**
+- **quickTips**와 **platformConfig**:
+  - 사용자 인터페이스의 작은 도움말(툴팁) 기능을 활성화하거나 특정 플랫폼(예: 데스크톱)에 대한 특수 설정을 지정할 수 있음.
+  
+- **onAppUpdate**:
+  - 애플리케이션이 업데이트되었을 때, 사용자에게 알리고 페이지 새로고침 여부를 묻는 대화상자를 표시. 이를 통해 최신 상태의 애플리케이션을 유지할 수 있음.
+
+###### 이렇게 정의된 `MvcApp.Application` 클래스는 애플리케이션의 전반적인 설정과 구조를 관리하는 핵심. 🌐 애플리케이션을 개발할 때 이 파일을 기점으로 모델, 뷰, 컨트롤러, 스토어 등을 구성하고 연결하여, Ext JS 기반의 웹 애플리케이션을 효율적으로 개발할 수 있음.
+---
+
+## 🌟 Ext JS에서의 데이터 표시: Main.js에 그리드 추가하기
+
+#### `Ext JS` 애플리케이션에서 데이터를 표시하는 방법 중 하나는 그리드 컴포넌트를 사용하는 것. 아래 코드는 `Main.js` 파일에서 그리드를 추가하여, 사용자 인터페이스에 데이터를 표시하는 방법을 보여줌.
+
+```javascript
+Ext.define('MvcApp.view.main.Main', {
+    extend: 'Ext.panel.Panel',
+    xtype: 'main',
+    title: 'MVC 아키텍쳐',
+    layout: {
+        type: 'vbox'
+    },
+    bodyPadding: '10 10 10 10',
+    items: [
+        {
+            xtype: 'textfield',
+            fieldLabel: '제목',
+            name: 'subject1'
+        },
+        {
+            xtype: 'button',
+            text: '전달',
+            name: 'btnSend'
+        },
+        {
+            xtype: 'textfield',
+            fieldLabel: '전달받은제목',
+            name: 'subject2'
+        },
+        {
+            xtype: 'grid',
+            width: 300,
+            height: 300,
+            store: 'Personnel',
+            columns: [
+                { text: '이름', dataIndex: 'name', width: 100 },
+                { text: '이메일', dataIndex: 'email', flex: 1 },
+                { text: '전화번호', dataIndex: 'phone', flex: 1 }
+            ]
+        }
+    ]
+});
+```
+### 📘 그리드 컴포넌트 설명
+- #### `xtype: 'grid'`: 이 구성 요소는 Ext JS의 그리드 컴포넌트를 사용하겠다는 것을 나타냄. 그리드는 행과 열로 데이터를 표시하는 테이블 형태의 `UI` 컴포넌트.
+- #### store: 'Personnel': 그리드가 표시할 데이터는 'Personnel' 스토어에 의해 관리. 여기서 'Personnel'은 stores: ['Personnel']에서 애플리케이션에 등록된 스토어의 이름을 참조. 이 스토어는 app/store/Personnel.js 파일에 정의된 데이터와 구조를 기반으로 함.
+- #### columns: 각 열은 그리드에 표시될 데이터의 종류를 나타냅니다. dataIndex 속성은 모델에 정의된 필드와 일치해야 합니다.
+## 🚀 왜 대문자로 'Personnel'을 사용하는가?
+#### `Ext JS`에서 스토어를 참조할 때 대문자를 사용하는 것은 해당 스토어의 클래스 이름을 직접 참조하기 때문. `Ext.define`으로 정의된 클래스 이름은 대소문자를 구분하며, 일반적으로 클래스 이름은 대문자로 시작. 따라서, `store: 'Personnel'`에서 `'Personnel'`은 `MvcApp.store.Personnel` 클래스를 참조하며, 이는 스토어가 정의된 파일의 경로와 이름을 기반으로 함.
+
+### 🌐 MVC 아키텍처에서의 데이터 흐름
+- #### 모델(Model): 데이터의 구조를 정의합니다. 여기서는 `'MvcApp.model.Personnel'`이 그 역할을 함.
+- #### 스토어(Store): 하나 이상의 모델 인스턴스를 저장하고 관리합니다. `'Personnel'` 스토어는 이 모델의 인스턴스들을 담고 있으며, 그리드와 바인딩되어 UI에 데이터를 공급.
+- #### 뷰(View): 사용자에게 보여지는 인터페이스를 구성. 여기서는 그리드를 포함한 `Main` 패널이 뷰의 역할을 함.
+- ####  컨트롤러(Controller): 사용자의 입력과 애플리케이션의 데이터 처리를 중계. 필요한 경우, 스토어와 모델을 업데이트
+
+### 🌟 Ext JS에서 데이터 추가하기: onSendClick 이벤트 핸들러 구현
+
+### 아래 코드는 `onSendClick` 함수를 사용하여 사용자가 버튼을 클릭했을 때 스토어에 새로운 데이터를 추가하는 방법을 보여줌. 이 예제는 `MvcApp.controller.AppController` 내에 정의.
+
+```javascript
+onSendClick: function() {
+    // 'Personnel' 스토어에 접근하여 새로운 데이터 추가
+    Ext.getStore('Personnel').add({
+        name: '홍길동',
+        email: "mr.data@enterprise.com",
+        phone: "555-444-4444"
+    });
+}
+```
+### 📘 onSendClick 함수 설명
+- #### `Ext.getStore('Personnel')`: 애플리케이션에 등록된 `'Personnel'` 이름의 스토어를 찾아서 반환. 이 스토어는 앞서 `app/store/Personnel.js`에 정의되었으며, `MvcApp.store.Personnel `클래스의 인스턴스.
+- ####  .add({...}): 스토어의` add `메소드를 사용하여 새로운 데이터를 스토어에 추가. 여기서 전달된 객체는 `MvcApp.model.Personnel` 모델의 구조를 따름.
+### 🚀 데이터 추가의 흐름
+#### 사용자가 UI에서 '전달' 버튼을 클릭.
+- ####  onSendClick 이벤트 핸들러가 실행되면서, 지정된 데이터가 `'Personnel'` 스토어에 추가됨.
+- #### 스토어와 바인딩된 `UI` 컴포넌트(예: `그리드`)는 스토어의 변경 사항을 감지하고 자동으로 업데이트됨. 이를 통해 사용자는 새로 추가된 데이터를 `UI`에서 바로 볼 수 있음.
+### 🌐 MVC 아키텍처에서의 역할
+- ####  뷰(View): 사용자의 입력을 받는 인터페이스 역할을 함. 여기서는 버튼 클릭이 그 예.
+- ####  컨트롤러(Controller): 사용자의 입력에 반응하여 스토어에 데이터를 추가하는 로직을 담당.
+- ####  스토어(Store): 데이터를 관리하며, 컨트롤러로부터 데이터를 받아 `UI`에 반영.
+##### 이 방식은 Ext JS의 MVC 아키텍처를 따라 데이터 관리와` UI `업데이트를 효율적으로 수행할 수 있게 합니다. 데이터 관리 로직을 중앙에서 처리함으로써 애플리케이션의 구조를 명확하게 하고, 유지 보수를 용이하게 만듦.
+
+## 🎛️ 컨트롤러(Controller)의 역할과 작동 원리
+##### 컨트롤러는 MVC 아키텍처에서 핵심적인 역할을 수행하는 컴포넌트 중 하나. 사용자의 입력을 받아 처리하고, 애플리케이션의 데이터 처리를 중계하는 중추적인 역할을 담당. 이 과정에서, 필요에 따라 스토어와 모델을 업데이트하여 데이터의 변화를 관리하고, 이를 뷰에 반영하여 사용자 인터페이스를 최신 상태로 유지.
+
+### 📌 컨트롤러의 주요 기능:
+- #### 이벤트 처리: 사용자의 액션(예: 버튼 클릭, 폼 제출 등)에 대한 이벤트 리스너를 등록하고 처리. 이를 통해 사용자의 입력에 적절한 반응을 할 수 있음.
+
+- ####  데이터 관리: 모델과 스토어를 통해 애플리케이션의 데이터를 관리. 컨트롤러는 스토어에서 데이터를 조회하거나 업데이트하고, 이 변경사항을 모델에 반영하여 애플리케이션의 상태를 최신으로 유지.
+
+- ####  뷰 업데이트: 데이터의 변경사항을 뷰에 반영하여 사용자 인터페이스를 업데이트. 이 과정은 주로 데이터 바인딩을 통해 자동으로 수행되며, 컨트롤러는 이 과정을 조정하고 관리.
+
+## 🚦 작동 원리:
+- #### 사용자가 UI에서 특정 액션을 수행(예: '전달' 버튼 클릭).
+- #### 컨트롤러는 해당 액션에 매핑된 이벤트 리스너(예: `onSendClick)`를 통해 이벤트를 감지하고 처리 로직을 실행.
+- #### 이 로직에 따라 필요한 데이터 변경사항이 스토어를 통해 모델에 반영.
+- #### 스토어와 연결된 뷰는 스토어의 변경사항을 감지하고 자동으로 `UI`를 업데이트.
+- #### 결과적으로, 사용자는 데이터의 최신 상태를 반영한 인터페이스를 볼 수 있게 됨.
+- #### 컨트롤러는 이렇게 사용자의 입력과 애플리케이션의 데이터 처리 사이를 효율적으로 중계하며, 애플리케이션의 로직과 흐름을 관리. 이는 애플리케이션의 구조를 명확하게 하고, 각 컴포넌트의 역할을 분명히 하여 개발과 유지 보수를 용이하게 함.
+---
+# 🌈 Ext JS MVVM 아키텍처 (Architecture) (Model-View-ViewModel)
+
+## 📚 Ext JS MVVM 아키텍처 개요
+
+#### Ext JS에서의 MVVM (Model-View-ViewModel) 아키텍처는 애플리케이션을 더욱 체계적으로 구성할 수 있는 방법을 제공합니다. 이 아키텍처는 크게 세 가지 주요 구성 요소로 나뉩니다.
+
+## 1. Model 📦
+- **역할**: 애플리케이션의 데이터와 비즈니스 로직을 담당.
+- **특징**: 데이터의 저장 및 관리, 비즈니스 규칙의 실행 등을 담당하며, 직접적으로 사용자 인터페이스`(UI)`와 상호작용하지 않음.
+
+## 2. View 🖼️
+- **역할**: 사용자에게 데이터와 상호작용 인터페이스를 시각적으로 표현함.
+- **특징**: `HTML, CSS, JavaScript` 등을 사용하여 구현되며, 사용자의 입력을 받고, 사용자에게 정보를 시각적으로 제공함.
+
+## 3. ViewModel 🧠
+- **역할**: `View`와 `Model` 사이의 중재자 역할을 합니다. `View`에 표시될 데이터를 준비하고, 사용자의 입력을 처리하여 Model에 반영함.
+- **특징**: 데이터 바인딩과 명령 바인딩을 통해 View와 Model 사이의 동기화를 자동화 함. 이를 통해 `View`는 `ViewModel`에 정의된 데이터와 상태에 따라 자동으로 업데이트 됨.
+
+## 💡 MVVM 아키텍처의 장점
+- **모듈성**: 화면 단위로 컴포넌트를 나누어 관리할 수 있어, 대규모 애플리케이션 개발 시 코드의 관리와 유지보수가 용이함.
+- **재사용성**: `ViewModel`을 통해 데이터와 로직을 처리하므로, 비슷한 구조의 다른 `View`에서도 동일한 ViewModel을 재사용할 수 있음.
+- **테스트 용이성**: `UI` 로직이 `ViewModel`에 분리되어 있기 때문에, 사용자 인터페이스를 건드리지 않고도 데이터 처리 로직을 테스트할 수 있음.
+
+## 🛠️ Ext JS MVVM 아키텍처 구현 예제
+
+#### Ext JS 애플리케이션 생성
+```plaintext
+C:\WorkspaceExtjs>sencha -sdk C:\SenchaSdk generate app classic MvvmApp ./MvvmApp
+```
+
+#### 애플리케이션 빌드
+```plaintext
+C:\WorkspaceExtjs\MvvmApp>sencha app build development
+```
+### 📦 Tomcat 개발서버 복사 설명은 생략하겠습니다
+
+#### 위의 내용에서 많은 정보를 다루었기 때문에, Tomcat 개발서버로의 복사 과정에 대한 설명은 생략하겠습니다. 필요한 기본 정보와 명령어는 이미 제공되어있어요. 🚀
+---
+## 🎮 Ext JS MVVM 아키텍처에서의 컨트롤러
+
+#### MVVM 아키텍처 내에서 컨트롤러는 주로 다음과 같은 역할을 수행:
+
+### 1. 이벤트 처리 🎉
+- **설명**: 뷰에서 발생하는 사용자 이벤트(예: 버튼 클릭, 폼 제출 등)를 감지하고, 이에 대한 반응으로 적절한 로직(예: 데이터 검증, 모델 업데이트 등)을 실행.
+- **특징**: 이벤트 처리 로직을 뷰모델이나 뷰로부터 분리함으로써, 코드의 가독성과 유지보수성을 향상시킬 수 있음.
+
+### 2. 애플리케이션 로직 실행 🔍
+- **설명**: 애플리케이션 전반에 걸친 공통 로직(예: 페이지 전환 로직, 전역 상태 관리 등)을 처리.
+- **특징**: 특정 뷰나 뷰모델에 종속되지 않는 애플리케이션 수준의 로직을 관리함으로써, 애플리케이션의 구조를 더욱 명확하게 할 수 있음.
+
+### 3. 뷰와 뷰모델 간의 조정 🤝
+- **설명**: 복잡한 데이터 바인딩이나, 뷰모델 간의 상호작용을 조정하는 역할을 할 수도 있음.
+- **특징**: 뷰와 뷰모델의 결합도를 낮추어, 각각의 재사용성과 테스트 용이성을 높일 수 있음.
+
+### 결론 ✨
+##### `MVVM` 아키텍처에서 컨트롤러는 뷰와 뷰모델 사이의 상호작용을 원활하게 하고, 애플리케이션의 흐름을 제어하는 중요한 역할을 함. 비록 `MVVM` 아키텍처가 뷰모델에 중점을 두고 있지만, 특정 시나리오에서 컨트롤러의 역할은 여전히 중요함.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
 
 
 
