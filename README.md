@@ -10,6 +10,10 @@
 - 🌈[Ext JS 클래스 정의와 상속](#🌟-ext-js-클래스-정의와-상속🌈)
 - 🌈[Ext JS MVC 아키텍쳐(Acrhitecture)](#🌈-ext-js-mvc-아키텍쳐-mvc-architecture-🏛️🖥️) 
 - 🌈[Ext JS MVC 아키텍쳐(Acrhitecture)2](#🌈-ext-js-mvc-아키텍쳐-mvc-architecture-ii-🏛️-스토어-사용)
+- 🌈[Ext JS MVVM 아키텍쳐(Acrhitecture)](#🌈-ext-js-mvvm-아키텍처-architecture-model-view-viewmodel)
+- 🌈[Ext JS MVVM 아키텍쳐(Acrhitecture)2](#🌈-ext-js-mvvm-아키텍처-architecture-ii-model-view-viewmodel-스토어-사용)
+- 🌈[Ext JS MVC + MVMM](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-🌟)
+- [Ext JS MVC + MVMM 2](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-ii-🌟)
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
@@ -1748,6 +1752,1000 @@ C:\WorkspaceExtjs\MvvmApp>sencha app build development
 ### 결론 ✨
 ##### `MVVM` 아키텍처에서 컨트롤러는 뷰와 뷰모델 사이의 상호작용을 원활하게 하고, 애플리케이션의 흐름을 제어하는 중요한 역할을 함. 비록 `MVVM` 아키텍처가 뷰모델에 중점을 두고 있지만, 특정 시나리오에서 컨트롤러의 역할은 여전히 중요함.
 ---
+# 🛠️ ExtJS MVVM 아키텍처에서의 MainController 및 Main View 설정하기
+
+ExtJS MVVM 아키텍처를 구현할 때 중요한 두 파일, `Main.js`와 `MainController.js`의 설정 방법을 살펴보겠습니다. 이 설명은 비전공자도 이해할 수 있도록 기초적인 개념과 설정 방법에 초점을 맞춥니다.
+
+## 📂 Main.js 수정하기
+
+#### `Main.js` 파일은` ExtJS` 애플리케이션의 시작점이며, 여기서 애플리케이션의 전반적인 레이아웃과 설정을 정의.
+
+### 1. **MVCapp의 `main.js` 복사 후 MVVM 아키텍처로 이름 변경**
+   - #### 기존 MVC 애플리케이션의 `main.js` 파일을 복사.
+   - #### 복사한 파일을 MVVM 아키텍처에 맞게 이름을 변경. 이렇게 하면 기존의 설정을 기반으로 새로운 아키텍처를 쉽게 적용할 수 있음.
+
+### 2. **그리드 제거**
+   - #### MVVM 아키텍처에 불필요한 그리드`(grid)` 관련 코드를 제거합니다. MVVM은 모델`(Model)`, 뷰`(View)`, 뷰모델`(ViewModel)`의 분리에 중점을 두기 때문에, 필요에 따라` UI` 구성 요소를 조정해야 할 수 있음.
+
+## 🎮 MainController.js 설정하기
+
+#### `MainController.js`에서는 애플리케이션의 사용자 인터페이스 로직을 처리. 이 파일에서 뷰 컨트롤러를 정의하여, 뷰와 모델 간의 상호작용을 관리.
+
+### 파일명 규칙
+- #### `MainController.js`의 파일명은 관련된 뷰의 이름을 따름. 이는 코드의 가독성과 유지 관리를 용이하게 함.
+- #### `Ext.app.ViewController`를 상속(extend)하여 뷰 컨트롤러의 기능을 사용.
+
+### Alias 설정
+- #### Alias는 `'controller.main'`으로 설정. 이는 뷰에서 해당 컨트롤러를 참조할 때 사용하는 고유한 식별자입니다.
+- #### 뷰에서는 일반적으로 `widget.`을 사용하지만, 컨트롤러에서는 `controller.`를 사용합니다. 이 구분은 `ExtJS`의 내부 규칙에 따른 것으로, 뷰와 컨트롤러를 명확하게 구분하기 위한 목적을 가짐.
+
+## 결론
+
+#### ExtJS의 MVVM 아키텍처에서 `Main.js`와 `MainController.js`의 설정은 애플리케이션의 구조를 정의하는 중요한 단계. `Main.js`는 애플리케이션의 진입점으로서 전반적인 구성을 담당하며, `MainController.js`는 사용자의 인터랙션과 뷰의 동적 요소를 관리. 이러한 설정을 통해, `ExtJS` 애플리케이션의 유지보수성과 확장성을 크게 향상시킬 수 있음.
+
+#### 파일명 규칙: `MainController.js` 파일명은 관련된 뷰의 이름을 따름. 확장 상속을 받아 사용하기 때문에, Ext.app.ViewController를 extend하여 사용.
+##### Alias 설정: Alias는 'controller.main'으로 정의합니다. `View`에서는 `widget.`으로 시작하지만, 뷰 컨트롤러에서는 `controller.`로 시작하는 것이 일반적. 이는 `ExtJS`의 내부적인 규칙에 따른 것으로, 뷰와 컨트롤러를 명확하게 구분하기 위함.
+
+## 🎮 MainController.js 설정 및 뷰와의 연결 방법
+
+### `MainController.js`는 애플리케이션의 사용자 인터페이스 로직을 처리하는 곳 이 파일을 통해 정의된 뷰 컨트롤러는 뷰와 모델 간의 상호작용을 효과적으로 관리하게 됨. 아래는 `MainController.js` 설정과 뷰와의 연결 방법에 대한 자세한 설명.
+
+### 파일명 규칙 및 상속
+- #### **파일명 규칙**: `MainController.js`의 파일명은 연결될 뷰의 이름을 따라갑니다. 이러한 규칙은 코드의 가독성 및 유지보수를 용이하게 함.
+- #### **상속**: `Ext.app.ViewController`를 상속(extend)하여, 뷰 컨트롤러의 다양한 기능을 사용할 수 있음.
+
+### Alias 설정과 뷰와의 연결
+- **Alias 설정**: Alias는 `'controller.main'`으로 설정하면. 이 Alias는 뷰에서 특정 컨트롤러를 참조할 때 사용되는 고유한 식별자 역할을 함.
+- **뷰와 컨트롤러의 연결**: 뷰에서 컨트롤러를 연결하기 위해, 뷰 정의 부분에 `controller: 'main'`과 같이 Alias를 명시함. 이 방법을 통해, `Ext.define`으로 정의된 컨트롤러와 뷰를 연결할 수 있음.
+
+```javascript
+// Controller
+Ext.define('MvvmApp.view.main.MainController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.main',
+
+// view
+     Ext.define('MvvmApp.view.main.Main', {
+    extend: 'Ext.panel.Panel',
+    requires:['MvvmApp.view.main.MainController'],
+    controller:'main',
+});
+```
+
+### 명시적인 연결 설명
+#### 뷰에서 `controller: 'main'`을 선언함으로써, `alias: 'controller.main'`으로 지정된 `MainController.js`와 뷰를 직접 연결. 이렇게 함으로써, 뷰 내에서 발생하는 이벤트나 동작들이 `MainController`에서 정의된 로직을 통해 처리될 수 있게 됨.
+### 결론
+#### `ExtJ`S의 `MVVM` 아키텍처에서 `Main.js`와 `MainController.js`의 설정은 애플리케이션의 핵심 구조를 정의. `Main.js`는 애플리케이션의 진입점이며, `MainController.js`는 사용자 인터랙션과 뷰의 동적 요소를 관리. `뷰`와 `컨트롤러`의 명시적 연결은 애플리케이션의 유지보수성과 확장성을 크게 향상시키며, 개발자가 뷰와 비즈니스 로직을 명확히 분리하여 관리할 수 있게 함.
+---
+
+# 🎨 ExtJS MVVM 아키텍처: Main View 및 Controller 연결하기 (복습)
+
+#### ExtJS 애플리케이션에서 `Main.js`와 `MainController.js`의 설정과 연결은 사용자 인터페이스와 로직의 분리를 가능하게 하여, 애플리케이션의 구조를 명확하고 유지보수하기 쉽게 만듦. 여기서는 `Main.js` 설정과 `MainController`의 연결 과정을 자세히 설명.
+
+## 📁 Main.js의 설정
+
+#### `Main.js`는 애플리케이션의 중심이 되는 뷰를 정의. 이 파일에서는 사용될 컨트롤러와 필요한 컴포넌트를 선언.
+
+```javascript
+Ext.define('MvvmApp.view.main.Main', {
+    extend: 'Ext.panel.Panel', // ExtJS 패널을 확장
+    requires: ['MvvmApp.view.main.MainController'], // MainController를 포함시킴
+    controller: 'main', // 해당 뷰의 컨트롤러를 지정
+    xtype: 'main', // 이 뷰의 xtype 정의
+    title: 'MVVC 아키텍쳐', // 패널의 제목
+    layout: {
+        type: 'vbox' // 수직 박스 레이아웃 사용
+    },
+    bodyPadding: '10 10 10 10', // 패딩 설정
+    items: [{ // 뷰에 포함될 아이템들 정의
+        xtype: 'textfield',
+        fieldLabel: '제목',
+        name: 'subject1',
+        reference: 'subject1' // 나중에 컨트롤러에서 참조할 수 있게 이름 지정
+    }, {
+        xtype: 'button',
+        text: '전달',
+        name: 'btnSend',
+        handler: 'onSendClick' // 버튼 클릭 이벤트 핸들러 지정
+    }, {
+        xtype: 'textfield',
+        fieldLabel: '전달받은제목',
+        name: 'subject2',
+        reference: 'subject2' // 나중에 컨트롤러에서 참조할 수 있게 이름 지정
+    }]
+});
+```
+### 🔄 Main.js와 MainController.js의 연결
+####  requires 선언
+- ###### requires: ['MvvmApp.view.main.MainController']를 사용하여 `MainController.js` 파일을 현재 뷰에 포함시키는 것과 같음. 이는 `JAVA`의 `import` 문과 비슷한 역할을 하여, 필요한 외부 파일을 현재 컴포넌트로 가져오는 역할을 함.
+#### controller 속성
+- ###### controller: `'main'`을 통해 현재 뷰에 사용될 컨트롤러를 지정. 이때 `'main'`은 `MainController.js`에서 정의된 `alias: 'controller.main'`에 해당. 이렇게 설정함으로써, 뷰는 해당 컨트롤러의 로직을 사용할 수 있게 되며, 사용자 인터랙션이나 데이터 처리 로직을 뷰에서 분리할 수 있음.
+### 🎉 결론
+
+#### `Main.js`의 설정과` MainController.js`의 연결 과정을 통해` ExtJS MVVM` 아키텍처에서 뷰와 컨트롤러를 효과적으로 관리할 수 있고. 이 구조는 개발자가` UI`와 비즈니스 로직을 분리하여 관리할 수 있게 하여, 애플리케이션의 유지보수성과 확장성을 향상시킴. 🌟
+
+## 🌟 ExtJS MVVM 아키텍처: 이벤트 핸들링과 컴포넌트 참조
+
+#### `ExtJS`에서 `MVVM` 아키텍처를 사용하면, 이벤트 핸들링과 컴포넌트 참조가 매우 직관적이고 간결해짐. 여기서는 `MainController.js`에서 버튼 클릭 이벤트를 처리하는 방법과, 텍스트 필드에 접근하는 방법을 살펴보자.
+
+### 🖱️ 이벤트 핸들링
+
+#### `ExtJS MVVM` 아키텍처에서 이벤트를 핸들링하는 방식은 간단하며, 이벤트 핸들러를 문자열로 직접 지정.
+
+```javascript
+{
+    xtype: 'button',
+    text: '전달',
+    // name: 'btnSend', // 이제 name 속성은 주석 처리해도 됨.
+    handler: 'onSendClick' // 버튼 클릭 시 호출될 핸들러
+}
+```
+- #### handler 속성: 이는 버튼 클릭 이벤트에 반응하여 호출될 함수의 이름을 문자열로 지정. 여기서 `'onSendClick'`은 `MainController.js `내에 정의될 함수.
+### 📋 컴포넌트 참조
+- #### `MVVM `아키텍처에서는 `reference` 속성을 사용하여 뷰 내의 컴포넌트를 쉽게 참조할 수 있음. 이는 컨트롤러에서 해당 컴포넌트에 직접 접근할 수 있게 해줌.
+
+```javascript
+{
+    xtype: 'textfield',
+    fieldLabel: '제목',
+    reference: 'subject1' // 컴포넌트를 참조하는 데 사용될 이름
+},
+{
+    xtype: 'textfield',
+    fieldLabel: '전달받은제목',
+    reference: 'subject2'
+}
+```
+- #### reference 속성: 특정 컴포넌트를 나중에 쉽게 찾을 수 있도록 참조 이름을 지정.
+### 🎮 MainController에서의 이벤트 처리
+- #### `MainController.js`에서는 `handler`에 지정된 이벤트 이름과 동일한 함수를 정의하여, 해당 이벤트를 처리.
+
+```javascript
+Ext.define('MvvmApp.view.main.MainController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.main',
+    onSendClick: function() {
+        let value = this.lookupReference('subject1').getValue(); // subject1 참조로 값을 가져옴
+        this.lookupReference('subject2').setValue(value); // subject2 참조에 값을 설정
+    }
+});
+```
+- #### `lookupReference` 메서드: `reference`로 지정된 컴포넌트를 찾아 작업을 수행. 이 메서드는 `MVVM` 아키텍처에서 컴포넌트에 접근하는 표준 방법.
+### 🔄 MVC와 MVVM의 차이점
+- #### `MVC`: `MVC` 아키텍처에서는 `refs`를 사용하여 뷰 컴포넌트에 접근했고, 모든 참조가 중앙 컨트롤러에서 관리되었음.
+- #### `MVVM`: 반면, `MVVM` 아키텍처에서는 뷰에서 직접 `reference`를 정의하고, 컨트롤러에서 `lookupReference`를 통해 해당 컴포넌트를 쉽게 찾아 사용할 수 있음. 이는 코드의 간결성을 높이고, 뷰와 로직의 분리를 명확하게 함.
+###### `MVVM` 아키텍처의 이벤트 핸들링과 컴포넌트 참조 방법은 애플리케이션 개발을 더욱 효율적이고 유지보수하기 쉽게 만들어줌. 🌈
+---
+
+# 🌈 Ext JS MVVM 아키텍처 (Architecture) II (Model-View-ViewModel) (스토어 사용)
+
+###  MVVM 아키텍처에서의 스토어 사용 방법
+
+#### MVVM 아키텍처에서는 `ViewModel`이 중심 역할을 함. `ViewModel`은 뷰의 상태와 데이터를 관리하며, 데이터 바인딩을 통해 뷰와 모델 사이의 연결고리 역할을 함. ExtJS에서 MVVM 아키텍처를 적용하기 위해 다음 단계를 따라보자.
+
+## 기존 MVC 아키텍처 코드
+
+- **Main.js (뷰)**
+    - ####  이전에는 `store: 'Personnel'`과 같이 직접 스토어를 지정.
+
+- **MainController.js (컨트롤러)**
+- **MainModel.js (모델)**
+
+#### 이 세 파일은 MVC 아키텍처에서 함께 사용되었으며, MVVM으로 전환 시 `MainModel.js`가 `ViewModel`의 역할을 하게 됨.
+
+## MVVM 아키텍처 적용
+
+1. **ViewModel 생성 (MainModel.js)**
+   - `MainModel.js` 파일 경로: `MvvmApp.view.main.MainModel`
+   - `alias` 설정: `alias: 'viewmodel.main'`
+   - 이 `ViewModel`은 뷰의 데이터와 상태를 관리.
+
+2. **스토어 정의 변경**
+   - MVVM 아키텍처에서는 스토어를 `ViewModel` 내에 정의하여 사용.
+```javascript
+   stores: {
+       personalInfo: {
+           data: [
+               { name: 'Jean Luc', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111" },
+               ...
+           ],
+           proxy: {
+               type: 'memory',
+               reader: {
+                   type: 'json',
+                   rootProperty: 'items' // 'items' 속성은 'memory' 타입 프록시에서 생략 가능
+               }
+           }
+       }
+   }
+```
+
+#### 여기서 data 속성에 직접 데이터를 배열로 넣어줄 수 있으며, proxy를 통해 데이터 관리 방식을 정의.
+### 뷰와 스토어의 바인딩
+#### 뷰에서 스토어를 사용하기 위해 이전에는 `store: 'Personnel'`로 직접 지정했던 부분을 바인딩을 통해 변경.
+``` javascript
+bind: {
+    store: '{personalInfo}'
+}
+```
+#### 이렇게 설정하면, ViewModel에 정의된 personalInfo 스토어가 해당 뷰와 연결됨.
+
+###  Main.js, MainController.js, MainModel.js의 관계
+
+#### `ExtJS`에서의 애플리케이션 구조는 주로 세 가지 주요 파일로 구분: 뷰(`main.js`), 컨트롤러(`MainController.js`), 그리고 모델(`MainModel.js`). MVVM 아키텍처에서는 이들 간의 관계가 애플리케이션의 구조와 동작 방식을 정의.
+
+### 파일 구성 및 역할
+
+- #####  **main.js (뷰)**
+  - 사용자 인터페이스와 사용자 경험을 정의하는 파일. 화면에 보이는 구성 요소들과 레이아웃을 정의.
+
+- ##### **MainController.js (컨트롤러)**
+  - 사용자의 입력과 애플리케이션의 이벤트 처리를 담당. 뷰에서 발생하는 이벤트에 대한 로직을 구현.
+
+- ##### **MainModel.js (뷰모델)**
+  - 데이터와 관련된 로직, 애플리케이션의 상태 관리를 담당. MVVM 아키텍처에서는 뷰모델이 중요한 역할을 함.
+
+## 선택적 사용
+
+#### 개발 과정에서 `MainModel.js` (뷰모델)을 사용하지 않고, `main.js`와 `MainController.js`만 사용하여 애플리케이션을 구현하는 경우가 종종 있음. 이는 아래와 같은 이유 때문:
+
+- #### **단순한 로직이나 작은 프로젝트의 경우**: 프로젝트의 복잡성이 낮거나, 데이터 관리가 중심이 아닐 때 뷰모델을 별도로 분리하지 않고, 컨트롤러 내에서 간단한 데이터 처리를 수행하기도 함.
+
+- #### **유연성과 단순성을 추구할 때**: 때로는 뷰모델을 분리하는 것이 오히려 관리 포인트를 늘리고 복잡성을 증가시킬 수 있음. 이 경우, 뷰와 컨트롤러만을 사용하여 애플리케이션을 구성하며, 간결하고 유연한 구조를 유지할 수 있음.
+
+## 결론
+
+#### `main.js`, `MainController.js`, `MainModel.js` 세 파일의 관계와 사용 방식은 프로젝트의 요구사항과 개발자의 선호도에 따라 달라질 수 있음. MVVM 아키텍처를 사용하더라도, 프로젝트의 특성에 맞춰 가장 적합한 구조를 선택하는 것이 중요.
+---
+
+# ExtJS의 MVVM 아키텍처를 이용한 데이터 관리와 UI 업데이트 🌐
+```javascript
+this.getViewModel().getStore('personalInfo').add({ name: '홍길동', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111" });
+```
+
+### ExtJS에서 제공하는 `MVVM(Model-View-ViewModel)` 아키텍처는 데이터 관리와 UI 업데이트를 매우 효율적으로 만들어 준다. 사용자가 UI에서 특정 액션(예: 버튼 클릭)을 수행할 때, 이에 반응하여 데이터를 업데이트하고 이 변경사항을 자동으로 UI에 반영하는 프로세스를 살펴보자.
+
+## 1️⃣ 현재 컨트롤러 인스턴스 가져오기: `this.getViewModel()`
+
+- #### **`this`**: 현재의 컨트롤러 인스턴스를 나타냄. 컨트롤러는 뷰와 연결되어 있으며, 뷰에서 발생하는 이벤트(예: 사용자 입력, 버튼 클릭 등)를 처리.
+- #### **`getViewModel()`**: 이 메서드는 컨트롤러와 연결된 ViewModel을 반환. ViewModel은 뷰에 표시되는 데이터와 상태를 관리하며, 이를 통해 UI의 데이터를 업데이트.
+
+## 2️⃣ 스토어 찾기: `.getStore('personalInfo')`
+
+- #### **`getStore('personalInfo')`**: ViewModel에서 `personalInfo`라는 이름의 스토어를 찾아 반환. 스토어는 애플리케이션의 데이터를 저장하고 관리하는 컨테이너 역할을 함. 여기서는 사용자의 이름, 이메일, 전화번호와 같은 정보를 저장.
+
+## 3️⃣ 스토어에 데이터 추가: `.add(...)`
+
+- #### **`.add(...)`**: 이 메서드를 사용해 스토어에 새로운 데이터 항목을 추가. 예시에서는 `{ name: '홍길동', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111" }`와 같은 새 사용자 정보를 스토어에 추가.
+
+## 🔄 작동 원리
+
+- #### **버튼 클릭 시**: 사용자가 "전달" 버튼을 클릭하면 `onSendClick` 함수가 호출.
+- #### **스토어 업데이트**: 이 함수는 `personalInfo` 스토어를 찾아 새로운 사용자 정보를 추가.
+- #### **UI 자동 반영**: 데이터가 스토어에 추가되면, 해당 스토어와 데이터 바인딩된 모든 UI 컴포넌트(예: 그리드)는 자동으로 업데이트되어 새로운 정보를 표시.
+
+#### 이 과정을 통해, `ExtJS` 애플리케이션은 데이터 추가, 수정, 삭제 등의 작업을 한 곳에서 처리할 수 있으며, 이러한 변경사항이 관련된 모든 UI에 자동으로 반영. 이는 데이터 관리와 UI 업데이트를 매우 효율적으로 수행할 수 있게 해주는 MVVM 아키텍처의 강점. 💪
+---
+## ExtJS의 MVVM 아키텍처에서 `this`의 이해와 활용 🎓
+
+### ExtJS에서 MVVM(Model-View-ViewModel) 아키텍처를 적용할 때, `this`의 사용과 그 중요성은 개발의 편리함과 직결됨. 이해하기 쉽도록, `this`가 가리키는 대상의 차이와 그로 인한 개발의 편의성에 대해 자세히 알아보자.
+
+## 🤖 `this`가 가리키는 대상
+
+### 1. 뷰(View)에서 `this`
+
+- #### **버튼 이벤트 핸들러 내부에서의 `this`**: 버튼에서 정의한 이벤트 핸들러 내부에서 `this`는 해당 버튼 컴포넌트 자체를 가리킨다. 이는 `this`를 사용하여 직접적으로 버튼의 속성이나 메서드에 접근할 수 있음을 의미.
+- #### **제한성**: 그러나 버튼이 아닌 다른 컴포넌트나 데이터에 접근하고자 할 때는 추가적인 작업이 필요함. 즉, `this.nextSibling('grid')`와 같이 상대적인 위치나 `this.up('panel').down('grid')`와 같이 상/하위 컴포넌트를 통해 접근해야 하며, 레이아웃의 변경에 따라 코드를 수정해야 할 수도 있음.
+
+### 2. 뷰 컨트롤러(ViewController)에서 `this`
+
+- #### **컨트롤러의 이벤트 핸들러에서의 `this`**: `MainController`와 같은 컨트롤러 내부에서 `this`는 컨트롤러 인스턴스 자체를 가리킨다. 이를 통해 컨트롤러는 뷰(View)와 뷰 모델(ViewModel)에 쉽게 접근할 수 있으며, UI 컴포넌트와 데이터 관리 로직을 효율적으로 연결할 수 있음.
+
+## 🛠 `this`를 활용한 개발의 편의성
+
+### 뷰 컴포넌트 접근
+
+- #### **`this.lookupReference('subject1')`**: 특정 레퍼런스(reference)를 가진 컴포넌트를 쉽게 찾을 수 있음. 이 방법은 뷰 내의 컴포넌트 간 직접적인 연결 없이도 필요한 컴포넌트에 접근하게 해 줌.
+
+### 데이터 관리
+
+- #### **`this.getViewModel().getStore('personalInfo')`**: 컨트롤러에서 뷰 모델의 스토어에 직접 접근하여, 데이터를 추가하거나 수정할 수 있음. 이로 인해 데이터와 UI의 동기화가 자동으로 이루어지며, 개발자는 UI 업데이트를 위한 추가적인 작업을 할 필요가 없음.
+
+## 🔄 MVVM 아키텍처의 장점 활용
+
+#### 뷰 컨트롤러에서 `this`를 통해 로직을 처리함으로써 MVVM 아키텍처의 장점을 최대한 활용할 수 있습니다. 데이터 관리와 UI 업데이트가 효율적으로 연결되어, 애플리케이션의 유지보수성과 확장성이 향상됨. 🌟
+
+- #### **데이터 바인딩**: 스토어에 데이터를 추가하면, 바인딩된 뷰가 자동으로 업데이트됨. 이는 개발자가 수동으로 UI를 갱신할 필요가 없게 만들어, 개발 과정을 간소화하고 오류 가능성을 줄여줌.
+
+- #### **컴포넌트 접근의 용이성**: 컨트롤러에서는 `this`를 통해 모든 뷰 컴포넌트에 접근할 수 있는 방식이 제공되고. 이는 코드의 가독성을 높이고, 개발 효율성을 개선.
+
+#### 결론적으로, MVVM 아키텍처에서의 `this` 사용은 ExtJS 애플리케이션의 개발을 더욱 강력하고 편리하게 만들어 , MVVM의 구조와 원리를 기억하며 ExtJS 프로젝트를 진행해 보자..! 💡
+---
+# 🌈 MVC + MVVM 아키텍처의 혼합 사용에 대한 이해 🌟
+
+#### ExtJS와 같은 프레임워크에서, `MVC(Model-View-Controller)`와 `MVVM(Model-View-ViewModel)` 아키텍처는 각각의 장점을 가지고 있다. 때로는 이 두 아키텍처를 혼합하여 사용함으로써, 개발의 효율성과 유지보수성을 높일 수 있다. 이 글에서는 MVC와 MVVM의 혼합 사용 방법과 그 장점에 대해 설명.
+
+## 📌 MVVM 아키텍처의 강점
+
+- #### **중심이 되는 View**: MVVM에서는 뷰`(View)`가 중심이 되며, 뷰 컨트롤러`(ViewController)`와 뷰 모델`(ViewModel`)은 뷰에 의존적입니다. 뷰가 사라지면 이들도 함께 메모리에서 제거된다.
+- #### **데이터 바인딩**: MVVM은 데이터 바인딩을 통해 모델과 뷰를 연결, 자동으로 UI가 업데이트되도록 함. 이는 코드의 양을 줄이고, 개발을 단순화시킴.
+
+## 📌 MVC 아키텍처의 강점
+
+- ####  **컨트롤러의 중심성**: MVC에서는 컨트롤러`(Controller)`가 애플리케이션의 로직을 중심으로 처리. 컨트롤러는 뷰나 모델에 대한 접근 및 조작을 주도함.
+- #### **분리된 관심사**: MVC는 애플리케이션을 `Model`, `View`, `Controller`로 나눔으로써, 각 부분의 개발과 관리를 독립적으로 할 수 있게 함.
+
+## 🔄 혼합 사용의 실제
+
+- #### **글로벌 컨트롤러 활용**: 글로벌 컨트롤러(`MVC`)는 애플리케이션 전체에 걸친 공통 기능을 구현하는 데 유용. 예를 들어, 페이지 이동이나 공통 팝업 호출 같은 기능을 이 컨트롤러에서 처리할 수 있음.
+- #### **뷰 및 뷰모델의 상속**: 개별 화면 개발 시, 뷰 컨트롤러와 뷰 모델`(MVVM)`을 상속받아 사용함으로써, 개발자는 특정 화면에 필요한 기능만을 추가로 구현하면 됨.
+
+## 🛠️ 혼합 사용의 장점
+
+- #### **효율적인 개발 프로세스**: 공통 기능은 `MVC`의 글로벌 컨트롤러에서, 화면별 특화 기능은 MVVM의 뷰 컨트롤러와 뷰 모델에서 각각 관리함으로써, 개발의 효율성과 재사용성을 극대화할 수 있음.
+- #### **유지보수의 용이성**: 애플리케이션의 구조가 명확해지고, 각 부분의 역할이 분명해짐에 따라, 코드의 이해와 유지보수가 용이해짐ㅁ.
+
+## 🎯 예시
+```javascript
+// 글로벌 컨트롤러(MVC)에서 페이지 이동 함수 구현
+navigateToPage: function(pageName) {
+    // 페이지 이동 로직 구현...
+}
+
+// 개별 뷰 컨트롤러(MVVM)에서 글로벌 컨트롤러의 함수 사용
+onSomeAction: function() {
+    this.getApplication().getController('GlobalController').navigateToPage('targetPage');
+}
+// 뷰모델(MVVM)에서 데이터 바인딩을 사용하여 UI 업데이트
+ViewModel: {
+    Properties: {
+        // 바인딩할 데이터 정의
+    }
+}
+```
+# ExtJS 프로젝트 생성 및 빌드 과정 🚀
+
+#### ExtJS 애플리케이션을 개발하기 위한 첫 단계는 프로젝트 생성부터 시작해보자. MVC와 MVVM 아키텍처를 혼합한 프로젝트를 만들고, 개발 모드로 빌드한 후, 결과물을 Tomcat 서버에 배포하는 전체 과정을 아래와 같이 진행.
+
+## 1️⃣ 프로젝트 생성
+
+#### CMD(명령 프롬프트)를 열고, 프로젝트를 생성할 워크스페이스 디렉토리(`C:\WorkspaceExtjs`)로 이동.
+
+```plaintext
+C:\>cd WorkspaceExtjs
+```
+#### 이동한 후, 다음 명령어를 입력하여 ExtJS 프로젝트를 생성. 이 명령어는 c:\senchasdk에 위치한 Sencha SDK를 사용해 ExFrm이라는 이름의 ExtJS 애플리케이션을 현재 워크스페이스에 생성.
+
+```plaintext
+C:\WorkspaceExtjs>sencha -sdk c:\senchasdk generate app ExFrm ./ExFrm
+```
+###### 이제 ExFrm 폴더 안에 새로운 ExtJS 프로젝트가 생성됨.
+
+## 2️⃣ 개발 모드로 빌드
+##### 프로젝트가 생성되면, 생성된 프로젝트 디렉토리(C:\WorkspaceExtjs\ExFrm)로 이동.
+
+```plaintext
+C:\WorkspaceExtjs>cd ExFrm
+```
+##### 프로젝트 디렉토리에 위치한 상태에서, 아래 명령어를 사용하여 프로젝트를 개발 모드(`development`)로 빌드.
+
+```plaintext
+C:\WorkspaceExtjs\ExFrm>sencha app build development
+```
+##### 개발 모드로 빌드하는 이유는 개발 중에 빠른 테스트와 디버깅을 용이하게 하기 위함. 빌드 과정이 완료되면, 프로젝트의 build 폴더 내에 개발용 파일들이 생성.
+
+## 3️⃣ Tomcat 서버의 root에 복사
+#### 빌드된 프로젝트를 `Tomcat` 서버의 `root`디렉토리에 배포하기 위해, 빌드 결과물을 `Tomcat` 설치 폴더 내의 `webapps\ROOT` 디렉토리로 복사. 
+
+
+#### 복사한 파일과 폴더를 Tomcat 설치 폴더 내의 webapps\ROOT 디렉토리에 붙여넣자.
+#### 이제 Tomcat 서버를 시작하거나 재시작하면, 브라우저를 통해 http://localhost:8080 주소로 접속했을 때 새로 생성한 ExtJS 애플리케이션을 볼 수 있음.
+
+##### 이 과정을 통해 ExtJS 프로젝트의 생성부터 빌드, 그리고 배포까지의 전체적인 흐름을 이해할 수 있음.
+---
+# ExtJS 애플리케이션의 기본 구조 설정하기 🏗️
+
+ExtJS 프레임워크를 사용하여 웹 애플리케이션을 구축할 때, 체계적인 폴더 구조와 명확한 컴포넌트 정의가 중요합니다. 여기서는 `view` 폴더 내에 `cust`와 `admin` 폴더를 생성하고, 애플리케이션의 메인 페이지를 설정하는 과정을 단계별로 설명합니다.
+
+## 1. 폴더 구조 생성하기 📁
+
+#### `view` 폴더 내에 `cust`와 `admin` 두 개의 서브 폴더를 생성. 이렇게 분리하여 폴더를 구성함으로써, 애플리케이션의 다양한 기능 영역(예: 고객 관리, 관리자 기능 등)을 명확하게 구분할 수 있다.
+
+- ####  **cust 폴더**: 고객 관련 뷰를 담당하는 컴포넌트들을 저장.
+- #### **admin 폴더**: 관리자 기능 관련 뷰를 담당하는 컴포넌트들을 저장.
+
+## 2. Alias 설정하기 🔖
+
+#### 각 컴포넌트의 `alias`는 고유한 이름을 사용하여 충돌을 방지하도록하자. 보통 `alias`는 패키지 경로를 포함하지만, 간단하게 호출하기 위해 `main`과 같은 간단한 이름을 사용할 수 있다.
+
+## 3. 메인 페이지 컴포넌트 정의하기 🌟
+
+#### 애플리케이션의 시작 페이지는 `main`이며, 다음은 `ExFrm.view.main.Main` 컴포넌트의 정의.
+
+```javascript
+Ext.define('ExFrm.view.main.Main', {
+    extend: 'Ext.container.Container', // 컨테이너 확장
+    xtype: 'main', // xtype을 'main'으로 설정
+
+    requires: [ // 필요한 의존성 명시
+        'Ext.plugin.Viewport',
+        'Ext.window.MessageBox',
+        'ExFrm.view.main.MainController',
+        'ExFrm.view.main.MainModel',
+        'ExFrm.view.main.List',
+        'ExFrm.view.menu.LeftMenu'
+    ],
+
+    controller: 'main', // 컨트롤러 지정
+    viewModel: 'main', // 뷰모델 지정
+    layout: 'border', // 레이아웃을 'border'로 설정
+
+    items: [{ // 메인 페이지 구성 요소
+        region: 'north', // 상단 영역
+        height: 50,
+        bodyStyle: 'background-color:black',
+        html: '<h2><font color="white">&nbsp;&nbsp;타이틀</font></h2>'
+    }, {
+        region: 'west', // 왼쪽 메뉴 영역
+        width: 200,
+        xtype: 'leftmenu', // 사용자 정의 메뉴 컴포넌트
+    }, {
+        region: 'center', // 중앙 탭 패널 영역
+        xtype: 'tabpanel',
+        name: 'mainbar',
+        items: [{ // 탭 내용
+            title: '화면1',
+            xtype: 'panel',
+        }]
+    }]
+});
+```
+#### 이 구조를 통해, 메인 페이지에는 상단 타이틀 바, 왼쪽 메뉴, 그리고 중앙의 탭 패널이 포함되고. 왼쪽 메뉴(leftmenu)는 사용자 정의 컴포넌트로, 메뉴 아이템 클릭 시 관련 화면을 중앙 탭 패널에 로드할 수 있다.
+#### 이 과정을 통해 애플리케이션의 기본적인 구조와 메인 페이지를 설정할 수 있고. 각 컴포넌트는 명확한 역할을 가지며, 이를 통해 사용자에게 효율적인 인터페이스를 제공함. 🛠️
+
+# ExtJS 애플리케이션의 메인 페이지 추가 설명란 🌐
+```javascript
+Ext.define('ExFrm.view.main.Main', {
+```
+### 📝 Ext.define: ExtJS에서 클래스를 정의하는 메서드. ExFrm.view.main.Main는 이 클래스의 고유한 이름이며, 애플리케이션의 구조에서 중요한 위치를 차지.
+
+```javascript
+    extend: 'Ext.container.Container',
+```
+### 🔍 extend: 이 클래스가 확장(상속)할 부모 클래스를 지정. Ext.container.Container는 다양한 컴포넌트를 담을 수 있는 범용 컨테이너.
+
+```javascript
+    xtype: 'main',
+```
+### ✨ xtype: 컴포넌트의 별칭. xtype: 'main'을 통해 나중에 레이아웃 정의 시 이 컨테이너를 쉽게 참조할 수 있음.
+
+```javascript
+
+    requires: [
+        ...
+    ],
+```
+### 🛠️ requires: 클래스가 동작하기 위해 필요한 다른 클래스들(컨트롤러, 뷰모델, 추가 뷰 등)을 명시. 이는 의존성 관리에 중요.
+
+```javascript
+    controller: 'main',
+    viewModel: 'main',
+```
+### 🎮 `controller`와 `viewModel`: `MVC` 또는 `MVVM` 아키텍처를 구현하는 데 중요한 부분. 각각 컨트롤러와 뷰모델의 인스턴스를 지정.
+
+```javascript
+    layout: 'border',
+```
+### 🖼️ layout: 컨테이너 내부의 컴포넌트 배치 방식을 정의. border 레이아웃은 컨테이너를 여러 영역으로 나누어 관리.
+
+```javascript
+
+    items: [
+        ...
+    ]
+});
+```
+### 📦 items: 이 컨테이너에 포함될 자식 컴포넌트들을 정의. 각각 `region` 속성을 사용해 상단(`north`), 왼쪽(`west`), 중앙(`center`) 영역에 배치.
+
+### HTML 엔티티`&nbsp;` 설명
+#### `&nbsp;`는 HTML에서 공백(`Non-Breaking SPace`)을 나타내는 엔티티. 여러 개의 공백을 웹 페이지에 표시하고 싶을 때 사용하며, 일반적인 공백 문자와 달리 줄 바꿈에서도 분리되지 않음. 예제 코드에서는 `&nbsp;&nbsp;`를 사용하여 타이틀 앞에 고정된 공백 두 개를 추가.
+---
+
+## ExtJS 애플리케이션의 구조 및 흐름 이해하기 🌟
+
+### ExtJS를 사용하여 복잡한 웹 애플리케이션을 구축하는 과정은 명확한 구조와 아키텍처를 필요로 합니다. 이번 세션에서는 메인 페이지의 구성, 서쪽 영역에 메뉴를 배치하는 방법, 그리고 이 메뉴가 어떻게 사용자의 클릭에 반응하는지를 살펴보자.
+
+## 1. 애플리케이션의 메인 화면 설정 🏠
+
+### 시작점: `app.js`
+
+- **메인 뷰 설정**: 애플리케이션의 시작 파일인 `app.js`에서 `mainView`를 `'ExFrm.view.main.Main'`로 지정. 이는 애플리케이션을 시작할 때 자동으로 메인 화면을 생성.
+
+### 메인 화면 정의: `Main.js`
+
+```javascript
+Ext.define('ExFrm.view.main.Main', {
+    extend: 'Ext.container.Container',
+    xtype: 'main',
+    items: [{
+        region: 'west',
+        width: 200,
+        xtype: 'leftmenu',
+        html: '메뉴',
+    }, ...]
+});
+```
+### 레이아웃 구성: 메인 화면은 border 레이아웃을 사용하여 화면을 여러 영역으로 분리. 특히 region: 'west'는 서쪽 영역에 메뉴를 배치하는 데 사용됨.
+
+## 2. 메뉴 컴포넌트 구성 📁
+#### 메뉴 정의: LeftMenu.js
+```javascript
+
+Ext.define('ExFrm.view.menu.LeftMenu', {
+    extend: 'Ext.tree.TreePanel',
+    alias: 'widget.leftmenu',
+    requires: ['ExFrm.view.menu.LeftMenuController'],
+    controller: 'leftmenu',
+    store: {
+        type: 'tree',
+        fields: ['name', 'url'],
+        proxy: {
+            type: 'ajax',
+            url: './service/menu.json'
+        },
+        autoLoad: true
+    }
+});
+```
+#### 트리 패널 상속: 메뉴는 Ext.tree.TreePanel을 상속받아 구성됨. 트리 구조를 통해 계층적인 메뉴를 쉽게 구현할 수 있음.
+
+#### 데이터 스토어: 메뉴의 항목은 menu.json 파일에서 로드. 이 파일은 메뉴 항목의 이름과 URL을 정의하고 있음 (임시로).
+
+### 메뉴 컨트롤러: LeftMenuController.js
+```javascript
+Ext.define('ExFrm.view.menu.LeftMenuController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.leftmenu',
+    onMenuClick: function(obj, selItem) {
+        Ext.Msg.alert('선택', selItem.data.url);
+    }
+});
+```
+#### 이벤트 처리: 사용자가 메뉴 항목을 클릭하면, onMenuClick 메서드가 호출됨. 이 메서드는 클릭된 메뉴 항목에 연결된 URL을 보여주는 알림을 표시함.
+### 3. 메뉴 데이터 구성 🌲
+#### 데이터 파일: `menu.json`
+```json
+Copy code
+{
+    "children": [
+        {"name": "화면1", "url": " ", "leaf": false, "children": [...]},
+        {"name": "화면2", "url": " ", "leaf": false}
+    ]
+}
+```
+#### 트리 구조: 메뉴는 계층적으로 구성. 각 메뉴 항목(화면1, 화면2)은 하위 메뉴 항목을 가질 수 있으며, 이는 children 배열을 통해 정의됨.
+### 요약
+#### `ExtJS`에서 애플리케이션의 메인 화면을 구성하고, 메뉴 시스템을 통해 사용자 인터랙션을 처리하는 과정은 위와 같고. 메뉴 컴포넌트는 트리 구조를 사용하여 계층적인 메뉴를 구성하며, 각 메뉴 항목에 대한 사용자의 클릭 이벤트는 `LeftMenuController`를 통해 처리됨. 이 과정은 MVVM 아키텍처의 화면단 구현에 맞추어져 있으며, 후속 작업으로 MVC 패턴과의 연동을 통해 배워보자.
+---
+
+# 🌈 MVC + MVVM 아키텍처의 혼합 사용에 대한 이해 II 🌟
+
+## ExtJS에서 글로벌 컨트롤러 설정하기 🌐
+
+### 단계별 가이드
+
+#### 1. 기본 파일 준비하기
+
+- ####  **`MVVMAPP` 폴더**에서 `Main.js`, `MainController.js`, `MainModel.js` 파일을 복사.
+- #### **`Tomcat root` 폴더** 안에 **`admin` 폴더**를 만들고, 복사한 세 파일을 여기에 붙여넣고.
+- #### 복사한 파일들의 이름을 `Test.js`, `TestController.js`, `TestModel.js`로 변경.
+- #### 각 파일 내의 클래스명도 각각 `Test`, `TestController`, `TestModel`로 수정.
+- #### 폴더 이름도 test로 변경
+- 
+
+#### 2. 메뉴 JSON 파일 수정하기
+
+- #### 프로젝트의 `menu.json` 파일을 열고, 테스트 화면을 호출하고자 하는 메뉴 아이템의 `"url"` 속성을 `"ExFrm.view.test.Test"`로 변경.
+```json
+{
+    "name": "Test화면호출",
+    "url": "ExFrm.view.test.Test",
+    "leaf": true
+}
+```
+## 🛠 글로벌 컨트롤러 추가하기
+
+### 단계 1: 컨트롤러 폴더 생성
+- **애플리케이션의 `app` 폴더** 내에 **`controller` 폴더**를 생성.
+  - 이 폴더는 애플리케이션 내 모든 컨트롤러 파일을 관리하는 곳.
+
+### 단계 2: `AppController.js` 파일 생성
+- **`AppController.js`** 라는 새 파일을 생성.
+  - 이 파일은 애플리케이션 전반에 걸쳐 공통으로 사용될 로직을 담당하는 글로벌 컨트롤러.
+
+### 단계 3: `AppController` 구현
+- 생성한 `AppController.js` 파일 안에, 글로벌 컨트롤러로서의 로직을 구현.
+  - 예: 이벤트 핸들링, 상태 관리, 다른 뷰와의 데이터 교환 등
+---
+
+### 📝 단계 4: `Application.js`에서 글로벌 컨트롤러 등록하기
+
+### `controllers` (복수형)
+- ##### 애플리케이션의 설정 파일인 **`Application.js`**를 열고, `AppController`를 컨트롤러 배열에 등록.
+- **예시:** 
+```javascript
+    Ext.define('ExFrm.Application', {
+        extend: 'Ext.app.Application',
+        name: 'ExFrm',
+        controllers: ['AppController'],
+    });
+```
+- **설명:** 이 속성을 사용하면, `Application` 클래스 내에서 여러 컨트롤러를 등록할 수 있으며, 이 컨트롤러들은 애플리케이션의 다양한 부분에서 접근 및 사용될 수 있다.
+### `controller` (단수형)
+- **용도:** 특정 뷰에 대한 `ViewController`를 지정.
+
+- **예시:**
+```javascript
+    Ext.define('MyApp.view.Main', {
+        extend: 'Ext.panel.Panel',
+        xtype: 'main',
+        controller: 'main',  // 뷰에 ViewController를 연결합니다.
+        // 뷰의 구성요소 및 로직 구현...
+    });
+```
+- #### **설명:** 각 뷰는 `controller` 속성을 사용하여 자신만의 이벤트 처리 및 로직을 관리하는 `ViewController`를 지정할 수 있고. 주로 해당 뷰 내에서 발생하는 이벤트를 처리하는 데 사용된다.
+
+#### 이러한 방식으로 ExtJS 애플리케이션 내에서 `controllers`와 `controller` 속성을 적절히 활용함으로써, 애플리케이션의 로직과 이벤트 처리를 효과적으로 관리할 수 있다.
+#### 여기서 단수형의 `controller`: `'main'` 예시는 뷰(`MyApp.view.Main`)가 자신의 `ViewController`(`main`)와 연결되어 있음을 의미. 이 연결을 통해 해당 뷰의 동작과 이벤트 핸들링 로직을 `main` 컨트롤러 내에서 정의하고 관리할 수 있게 됨.
+
+```javascript
+// 애플리케이션의 메인 컨트롤러 정의
+Ext.define('ExFrm.controller.AppController',{
+    extend:'Ext.app.Controller', // ExtJS의 컨트롤러 클래스 상속
+
+    // 컨트롤러 설정
+    config:{
+        // 컴포넌트 참조 설정
+        refs:{
+            // 'mainBar'라는 이름으로 메인 탭 패널 컴포넌트를 참조
+            // 이를 통해 해당 컴포넌트에 쉽게 접근할 수 있음
+            mainBar:'main tabpanel[name=mainbar]'
+        },
+    },
+    // 새로운 탭을 메인 탭 패널에 추가하거나, 이미 존재하는 탭을 활성화하는 함수
+    setMainBar:function(url, title){
+        // refs를 통해 찾은 'mainBar' (즉, 메인 탭 패널)을 가져옴
+        let mainBar = this.getMainBar();
+
+        // 선택된 타이틀이 이미 탭에 있는지 확인하기 위한 변수
+        var findTitle = false;
+
+        // 메인 탭 패널의 모든 탭을 순회
+        for(i=0; i < mainBar.getTabBar().items.items.length; i++){
+            console.log('find!!!'); // 디버깅 메시지 출력
+            // 순회 중인 탭의 타이틀이 선택된 타이틀과 일치하는지 확인
+            if(title == mainBar.getTabBar().items.items[i].title){
+                // 일치하는 타이틀이 있으면 해당 탭을 활성화하고 반복 중단
+                mainBar.setActiveTab(i);
+                findTitle = true;
+                break;
+            }
+        }
+
+        // 일치하는 타이틀을 찾지 못한 경우, 새 탭을 추가
+        if(findTitle == false){
+            // 주어진 URL로부터 새로운 패널 생성
+            var panel = Ext.create(url,{
+                autoShow:true, // 생성 즉시 표시
+                title:title, // 탭의 제목 설정
+                closable: true, // 탭을 닫을 수 있게 설정
+                autoDestroy:true // 탭이 닫힐 때 자동으로 제거되도록 설정
+            });
+            // 생성된 패널을 메인 탭 패널에 추가
+            mainBar.add(panel);
+            // 방금 추가된 패널을 활성화
+            mainBar.setActiveTab(panel);
+        }
+    }
+})
+```
+
+## 🚀 ExtJS AppController 상세 안내
+### 1. 컨트롤러 정의 및 상속 🧬
+```javascript
+`Ext.define('ExFrm.controller.AppController', {...})`: 애플리케이션의 글로벌 컨트롤러를 정의.
+```
+#### `extend: 'Ext.app.Controller'`: ExtJS의 기본 컨트롤러 클래스를 상속받아 기능을 확장.
+1. 컨트롤러 설정 🔧
+```javascript
+- `config`: 컨트롤러의 설정을 담는 객체.
+  - `refs`: 컴포넌트 참조를 설정하여 컨트롤러 내에서 쉽게 해당 컴포넌트에 접근할 수 있게 함.
+    - `mainBar: 'main tabpanel[name=mainbar]'`: 메인 탭 패널을 `mainBar`로 참조.
+```
+### 1. 탭 관리 기능 📑
+- #### `setMainBar(url, title)`: 새로운 탭을 메인 탭 패널에 추가하거나, 기존의 탭을 활성화하는 함수.
+  - #### `let mainBar = this.getMainBar()`: `refs`를 통해 메인 탭 패널 객체를 가져옴.
+  - #### 탭 순회 및 확인: 메인 탭 패널의 모든 탭을 순회하며, 주어진 `title`과 일치하는 탭이 있는지 확인.
+  - #### 새 탭 추가: 일치하는 탭이 없는 경우, 주어진 `url`로부터 새로운 패널을 생성하고 메인 탭 패널에 추가한 후 활성화.
+#### 요약 📌
+#### `AppController`는 애플리케이션의 탭 관리 로직을 중앙에서 처리할 수 있게 해주는 강력한 도구
+---
+## ExtJS 애플리케이션에서 동적 탭 관리 예시
+
+#### 메뉴 컴포넌트를 정의하고, 트리 패널을 상속받아 메뉴 아이템을 트리 구조로 표현합. `store`는 메뉴 데이터를 관리하며, AJAX를 통해 `menu.json`에서 데이터를 불러옴.
+```json
+{
+    "children":[
+        {"name": "화면1", "url":" ", "leaf":false,
+            "children":[
+                {"name":"Test화면호출", "url":"ExFrm.view.test.Test","leaf":true},
+                {"name":"화면1-2", "url":"ExFrm.view.cust.CustInfo","leaf":true},
+                {"name":"화면1-3", "url":"ExFrm.view.cust.CustInfo","leaf":true}
+            ]
+        },
+        {"name": "화면2", "url":" ", "leaf":false}
+    ]
+}
+```
+### 1. 메뉴 구성 (`LeftMenu.js`)
+
+```javascript
+Ext.define('ExFrm.view.menu.LeftMenu', {
+    extend: 'Ext.tree.TreePanel',
+    alias: 'widget.leftmenu',
+    requires: ['ExFrm.view.menu.LeftMenuController'],
+    controller: 'leftmenu',
+    width: 200,
+    title: '메뉴',
+    rootVisible: false,
+    displayField: 'name',
+    store: {
+        type: 'tree',
+        fields: ['name', 'url'],
+        proxy: {
+            type: 'ajax',
+            url: './service/menu.json',
+            reader: {
+                type: 'json'
+            }
+        },
+        autoLoad: true
+    },
+    listeners: {
+        itemclick: 'onMenuClick'
+    }
+});
+```
+### 2. 메뉴 아이템 선택 이벤트 처리 (`LeftMenuController.js`)
+#### 사용자가 메뉴 아이템을 클릭하면, LeftMenuController에서 onMenuClick 이벤트가 처리. 이때, `AppController`의 `setMainBar` 메소드를 호출하여, 선택된 메뉴에 해당하는 뷰를 메인 탭 패널에 추가하거나 활성화.
+```javascript
+Ext.define('ExFrm.view.menu.LeftMenuController',{
+    extend:'Ext.app.ViewController',
+    alias:'controller.leftmenu',
+    onMenuClick:function(obj, selItem){
+        Ext.Msg.alert('선택',selItem.data.url);
+    let appController =  ExFrm.app.getController('AppController');
+    appController.setMainBar(selItem.data.url, selItem.data.name);    
+    }
+```
+### 3. 탭 추가 또는 활성화 (`AppController.js`)
+##### `AppController`에서는 메인 탭 패널(`mainBar`)에 새로운 탭을 추가하거나, 이미 존재하는 탭을 활성화하는 `setMainBar` 메소드를 정의합니다. 새 탭이 필요한 경우, 주어진 URL로부터 뷰를 생성하고, 메인 탭 패널에 추가한 후 활성화 (위에 코드 있음 간략 설명).
+```json
+{"name":"Test화면호출", "url":"ExFrm.view.test.Test","leaf":true} // 이 url 
+```
+```javascript
+Ext.define('ExFrm.view.menu.LeftMenuController',{
+    extend:'Ext.app.ViewController',
+    alias:'controller.leftmenu',
+    onMenuClick:function(obj, selItem){
+        Ext.Msg.alert('선택',selItem.data.url);
+    let appController =  ExFrm.app.getController('AppController');
+    appController.setMainBar(selItem.data.url, selItem.data.name);
+    
+    // 여기서 클릭을하면 저 url 과 name이  전달된다 
+    }
+
+})
+
+ setMainBar:function(url, title) // 전달된 url 과 name 이 타이틀로 가게되며
+
+ // 새로운 탭을 메인 탭 패널에 추가하거나, 이미 존재하는 탭을 활성화하는 함수
+    setMainBar:function(url, title){
+        // refs를 통해 찾은 'mainBar' (즉, 메인 탭 패널)을 가져옴
+        let mainBar = this.getMainBar();
+
+        // 선택된 타이틀이 이미 탭에 있는지 확인하기 위한 변수
+        var findTitle = false;
+
+        // 메인 탭 패널의 모든 탭을 순회
+        for(i=0; i < mainBar.getTabBar().items.items.length; i++){
+            console.log('find!!!'); // 디버깅 메시지 출력
+            // 순회 중인 탭의 타이틀이 선택된 타이틀과 일치하는지 확인
+            if(title == mainBar.getTabBar().items.items[i].title){
+                // 일치하는 타이틀이 있으면 해당 탭을 활성화하고 반복 중단
+                mainBar.setActiveTab(i);
+                findTitle = true;
+                break;
+                // 여기서 타이틀 중복 새탭 추가되는 것을 막아주고
+            }
+        }
+        // 일치하는 타이틀을 찾지 못한 경우, 새 탭을 추가
+        if(findTitle == false){
+            // 주어진 URL로부터 새로운 패널 생성
+            var panel = Ext.create(url,{
+                autoShow:true, // 생성 즉시 표시
+                title:title, // 탭의 제목 설정
+                closable: true, // 탭을 닫을 수 있게 설정
+                autoDestroy:true // 탭이 닫힐 때 자동으로 제거되도록 설정
+            });
+            // 생성된 패널을 메인 탭 패널에 추가
+            mainBar.add(panel);
+            // 방금 추가된 패널을 활성화
+            mainBar.setActiveTab(panel);
+        }
+        // 이 url 의 해당하는 클래스가 없으면 생성하여 Test.js 의 panel을 화면에 뿌린다
+        Ext.define('ExFrm.view.test.Test', {
+    extend: 'Ext.panel.Panel',
+    requires:['ExFrm.view.test.TestController', 
+            'ExFrm.view.test.TestModel'],
+    controller:'test',
+    viewModel:{
+        type:'test'
+    },
+    xtype: 'test',
+    //alias: 'widget.main',
+    title:'MVVC 아키텍쳐',
+    layout:{
+        type:'vbox',
+        align:'stretch'
+    },
+    bodyPadding:'10 10 10 10',
+    closable:true,
+    items:[{
+        xtype:'textfield',
+        fieldLabel:'제목' ,
+        name:'subject1',
+        reference:'subject1'
+    },{
+        xtype:'button',
+        text:'전달',
+        //name:'btnSend',
+        handler:'onSendClick'
+    },{
+        xtype:'textfield',
+        fieldLabel:'전달받은제목' ,
+        name:'subject2',
+        reference:'subject2'
+    },{
+        xtype:'grid',
+        flex:1,
+        //store:'Personnel',
+        bind:{
+            store:'{personalInfo}'
+        },
+        columns:[{
+            text:'이름',
+            dataIndex:'name',
+            with:100
+        },{
+            text:'이메일',
+            dataIndex:'email',
+            flex:1
+        },{
+            text:'전화번호',
+            dataIndex:'phone',
+            flex:1
+        }]
+    }]
+
+});
+// 이구조의 화면을 새롭게 추가하는것이라고 보면된다 ..
+```
+
+### 단계 4: Test 뷰의 렌더링 🎨
+#### Test 뷰는 사용자에게 표시될 UI 컴포넌트 및 레이아웃을 정의. 또한, `TestController` 및 `TestModel`을 사용하여 UI 로직 및 데이터 관리를 수행
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
 
 
 
