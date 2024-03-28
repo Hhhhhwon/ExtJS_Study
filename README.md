@@ -2804,7 +2804,7 @@ Ext.define('ExFrm.view.test.AjaxTestController', {
         Ext.Ajax.request({
             url: './service/ajax.json',
             params: {},
-            scope: this, // 👈 AJAX 콜백 내부에서 `this`를 ViewController로 설정
+            scope: me, // 👈 AJAX 콜백 내부에서 `this`를 ViewController로 설정
             success: function(res) {
                 // 성공 처리 로직
             },
@@ -2869,6 +2869,7 @@ Ext.Ajax.request({
 #### `scope` 옵션을 설정하지 않았을 때, 콜백 함수 내부에서 `this`는 예상과 다르게 전역 객체`(window)`를 가리킬 수 있음. 이는 의도치 않은 버그를 초래할 위험이 있다.
 #### `scope` 옵션을 사용하여`this`의 컨텍스트를 명시적으로 설정하면, 콜백 함수 내에서 `this`가 항상 기대하는 컨트롤러 인스턴스를 가리키도록 할 수 있어, 코드의 안정성과 가독성이 향상됨.
 #### 비전공자 또는 초보 개발자도 이해할 수 있도록 `this`의 스코프와 관련된 문제를 명확하게 인식하고, `scope` 옵션을 적절히 사용하는 방법을 습득하는 것이 중요하다.
+---
 
 
 
