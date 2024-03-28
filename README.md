@@ -14,6 +14,7 @@
 - 🌈[Ext JS MVVM 아키텍쳐(Acrhitecture)2](#🌈-ext-js-mvvm-아키텍처-architecture-ii-model-view-viewmodel-스토어-사용)
 - 🌈[Ext JS MVC + MVMM](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-🌟)
 - [Ext JS MVC + MVMM 2](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-ii-🌟)
+- 🌈[Ext JS 서버 연동 AJAX](#🌟-ext-js-서버-연동-extajax-🌈)
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
@@ -2645,11 +2646,229 @@ Ext.define('ExFrm.view.menu.LeftMenuController',{
 ### 단계 4: Test 뷰의 렌더링 🎨
 #### Test 뷰는 사용자에게 표시될 UI 컴포넌트 및 레이아웃을 정의. 또한, `TestController` 및 `TestModel`을 사용하여 UI 로직 및 데이터 관리를 수행
 ---
+# 🌟 Ext JS 서버 연동 (Ext.Ajax) 🌈
 
+## 📄 서버와 연동하기 위한 데이터 포맷
 
+```json
+{
+    "success": true/false, // 🌟 통신 성공 여부
+    "data": { // 💾 실제 데이터
+        "custInfo": {},
+        "list": []
+    },
+    "msg": "" // 🚨 서버 에러 메시지
+}
+```
+- #### `success`: 요청이 성공적으로 처리되었는지 실패했는지를 나타내는 부울 값. 통신의 성공 여부를 알려줌.
+- #### `data`: 서버에서 반환된 실제 데이터를 포함. 객체나 배열 등 다양한 형태로 구성될 수 있음.
+- #### `msg`: 에러가 발생했을 때 서버에서 전송하는 메시지. 사용자에게 보여줄 수 있는 에러 메시지나 디버깅에 도움이 되는 정보를 포함할 수 있음.
+- 
+## 🌟 Ext JS에서 서버와 연동하는 방법
+#### 1. Ext.Ajax 사용하기
 
+#### Ext.Ajax는 Ext JS에서 제공하는 AJAX 통신 기능. 서버에 데이터를 요청하고 응답을 받는 데 사용됨.
 
+```javascript
+Ext.Ajax.request({
+    url: 'service/ajax.json', // 서버 URL
+    success: function(response) {
+        var data = Ext.decode(response.responseText);
+        console.log('서버 응답:', data);
+    },
+    failure: function() {
+        console.log('서버 요청 실패');
+    }
+});
+```
+### 2. Store에 Proxy 이용하기
+#### Store는 데이터를 관리하는 컴포넌트. proxy를 통해 서버와의 연동을 설정할 수 있으며, 이는 데이터 소스와의 상호 작용 방식을 정의.
 
+```javascript
+Ext.create('Ext.data.Store', {
+    model: 'MyApp.model.MyModel',
+    proxy: {
+        type: 'ajax',
+        url: 'service/data.json',
+        reader: {
+            type: 'json',
+            rootProperty: 'data'
+        }
+    }
+});
+```
+### 3. Form을 이용한 방법
+#### Ext JS의 Form 컴포넌트를 사용하여 서버에 데이터를 전송할 수 있음. submit 메소드를 사용하여 폼 데이터를 서버로 전송.
+
+```javascript
+myForm.getForm().submit({
+    url: 'service/formSubmit',
+    success: function(form, action) {
+       console.log('성공:', action.result.msg);
+    },
+    failure: function(form, action) {
+        console.log('실패:', action.result.msg);
+    }
+});
+```
+### 📁 실습: ajax.json 파일 생성
+
+#### 서버와의 연동을 테스트하기 위해 `service` 폴더에 `ajax.json` 파일을 생성.
+
+```json
+{
+    "success": true,
+    "data": {
+        "personnelInfo": {
+            "name": "Jean Luc",
+            "email": "jeanluc.picard@enterprise.com",
+            "phone": "555-111-1111"
+        }
+    },
+    "msg": ""
+}
+```
+#### 이 파일은 서버에서 데이터를 요청했을 때 응답으로 사용될 수 있다. Ext.Ajax.request를 사용하여 이 파일을 요청하고, 서버에서 반환된 데이터를 콘솔에 출력해 보는 실습을 진행해 보자.
+
+```javascript
+Ext.define('ExFrm.view.test.AjaxTestController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.ajaxtest',
+    onSendClick: function() {
+        var me = this;
+        Ext.Ajax.request({
+            url: './service/ajax.json',
+            params: {
+                // 필요한 경우 여기에 요청 파라미터를 추가.
+            },
+            scope: this,
+            success: function(res) {
+                var resObj = Ext.JSON.decode(res.responseText); // 응답 텍스트를 JSON 객체로 변환
+                if (resObj.success) {
+                    var data = resObj.data.personnelInfo;
+                    console.log("data =", data); // 콘솔에 데이터 출력
+                    // ViewModel의 personalInfo 스토어에 데이터 추가
+                    this.getViewModel().getStore('personalInfo').add(data);
+                } else {
+                    // 실패 처리 로직
+                }
+            },
+            failure: function() {
+                console.log('서버 요청 실패');
+            }
+        });
+    }
+});
+```
+### 📝 응답 데이터 처리하기
+#### 서버로부터 받은 응답은 문자열 형태의 `JSON`이므로, 이를 애플리케이션에서 사용하기 위해서는 객체로 변환해야 함. `Ext.JSON.decode` 메소드를 사용하여 `JSON`문자열을 `JavaScript` 객체로 변환.
+
+```javascript
+let resObj = Ext.JSON.decode(res.responseText); // JSON 문자열을 객체로 변환
+```
+#### 변환된 객체에서 필요한 데이터를 추출하여 사용. 예를 들어, `personnelInfo`에 접근하려면 다음과 같이 해보자.
+
+```javascript
+let data = resObj.data.personnelInfo;
+```
+
+### 💡 JSON 객체 다루기
+#### 객체로 변환하기: `Ext.JSON.decode` 메소드를 사용하여 `JSON` 문자열을 `JavaScript` 객체로 변환할 수 있음.
+#### 문자열로 변환하기: `JavaScript` 객체를 다시 `JSON` 문자열로 변환하려면 `JSON.stringify()` 메소드를 사용.
+
+### 🔄 실습: ajax.json 파일 사용하기
+#### `ajax.json` 파일에는 테스트용 데이터가 `JSON` 형식으로 저장되어 있다. 이 파일을 서버로부터 요청하여 응답 데이터를 애플리케이션에 사용하는 방법을 실습.
+```json
+{
+    "success": true,
+    "data": {
+        "personnelInfo": {
+            "name": "AJAX",
+            "email": "jeanluc.picard@enterprise.com",
+            "phone": "555-111-1111"
+        }
+    },
+    "msg": ""
+}
+```
+## 🌟 Ext.Ajax.request와 this의 스코프
+### 🎯 this의 스코프 관리
+#### `this`는 현재 실행 중인 컨텍스트를 가리키는 지시자. `Ext JS`의 `Ext.Ajax.request`에서는 `this`를 특별히 관리해주어야 함.
+
+```javascript
+Ext.define('ExFrm.view.test.AjaxTestController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.ajaxtest',
+    onSendClick: function() {
+        var me = this; // 👈 `this`를 적절히 관리하기 위한 변수
+        Ext.Ajax.request({
+            url: './service/ajax.json',
+            params: {},
+            scope: this, // 👈 AJAX 콜백 내부에서 `this`를 ViewController로 설정
+            success: function(res) {
+                // 성공 처리 로직
+            },
+            failure: function() {
+                // 실패 처리 로직
+            }
+        });
+    }
+});
+```
+#### `scope`: `this` 설정으로 콜백 함수 내부에서 `this`가 `ViewController`를 가리키게 함. 이로써 컨트롤러의 메소드나 속성에 쉽게 접근할 수 있음.
+### 🚀 success 콜백 함수
+#### `Ext.Ajax.request`의 `success` 콜백은 서버 응답 코드가 200번대일 때 호출됨. 하지만, 이는 데이터 처리가 성공적이었는지의 여부와는 별개.
+#### 서버에서 반환된 실제 데이터의 성공 여부(`resObj.success`)는 응답 내용(`res.responseText`)을 분석하여 확인.
+```javascript
+success: function(res) {
+    var resObj = Ext.JSON.decode(res.responseText); // 응답을 객체로 변환
+    if (resObj.success) {
+        // 데이터 처리 성공 로직
+    } else {
+        // 데이터 처리 실패 로직
+    }
+},
+```
+### 📌 실패 처리
+- #### `failure` 콜백은 요청 자체가 실패했을 때 호출. 예를 들어 네트워크 문제나 서버 오류(500번대 응답 코드) 등.
+### 🛠️ Ext.Ajax.request vs. 스토어 사용
+- #### 스토어와 프록시 📚: `Grid`나 `ComboBox`와 같은 컴포넌트에서는 데이터를 관리하기 위해 스토어`(Store)`를 사용. 스토어는 데이터 로딩, 필터링, 정렬 등의 작업을 쉽게 만들어주며, 프록시`(Proxy)`를 통해 서버와의 데이터 교환을 처리.
+- #### 단일 데이터 요청 📡: `Ext.Ajax.request`는 주로 단건 조회나 특정 데이터를 서버로부터 요청할 때 사용. 단일 정보나 간단한 객체를 처리할 때 유용.
+- #### 폼 데이터 전송 📤: 데이터를 서버로 전송할 때는 `Form` 컴포넌트와 함께 `submit` 메소드를 사용. 이 방법은 주로 사용자 입력을 처리하여 서버에 데이터를 전송할 때 적합함.
+
+### 📖 요약
+#### Ext JS에서 서버와의 통신을 위해 `Ext.Ajax.request`를 사용할 때는 `scope` 옵션으로` this`의 스코프를 적절히 관리. `success` 콜백은 `HTTP` 응답 코드가 200번대일 때 호출되며, 응답 데이터의 성공 여부는 별도로 확인. Ext JS에서 데이터 처리 방식은 사용하는 컴포넌트나 요구 사항에 따라 다르므로, 상황에 맞게 적절한 방법을 선택하는 것이 중요.
+
+### 🚀 This , Scope
+
+```javascript
+let me = this; // 'this'를 'me'에 할당하여 현재 컨트롤러의 참조를 보존.
+```
+### 📌 scope를 사용하지 않았을 때의 this
+#### 위의 예제에서 `success` 콜백 함수 내에서 `let me = this;`를 사용하고 있다. 이는 `Ext.Ajax.request` 호출 시 `scope` 옵션을 명시적으로 지정하지 않았기 때문에 콜백 함수 내의 `this`가 전역 객체`(window 객체)`를 가리킬 가능성이 있어, 안전하게 현재 컨트롤러의 참조를 me 변수에 저장하는 방법을 사용하고 있음.
+
+### ✅ scope를 사용했을 때의 this
+#### `scope` 옵션을 사용하면 `success, failure`와 같은 콜백 함수 내부에서 `this`가 가리키는 객체를 명시적으로 설정할 수 있다. 아래의 코드는 `scope` 옵션을 추가하여 `this`가 항상 `AjaxTestController` 인스턴스를 가리키도록 하는 방법을 보여줌.
+
+```javascript
+Ext.Ajax.request({
+    url: './service/ajax.json',
+    params: {},
+    scope: this, // 'this'는 AjaxTestController 인스턴스를 가리킨다.
+    success: function(res) {
+        // 이제 여기서 'this'는 'AjaxTestController' 인스턴스.
+    },
+    failure: function(res) {
+        // 여기서도 'this'는 'AjaxTestController' 인스턴스.
+    }
+});
+```
+### 이렇게 `scope: this`를 지정함으로써, 콜백 함수 내에서 `this.getViewModel().getStore('personalInfo').add(data);`와 같이 현재 컨트롤러의 메소드와 속성에 안전하게 접근할 수 있게 됨.
+
+### 🎯 요약
+#### `scope` 옵션을 설정하지 않았을 때, 콜백 함수 내부에서 `this`는 예상과 다르게 전역 객체`(window)`를 가리킬 수 있음. 이는 의도치 않은 버그를 초래할 위험이 있다.
+#### `scope` 옵션을 사용하여`this`의 컨텍스트를 명시적으로 설정하면, 콜백 함수 내에서 `this`가 항상 기대하는 컨트롤러 인스턴스를 가리키도록 할 수 있어, 코드의 안정성과 가독성이 향상됨.
+#### 비전공자 또는 초보 개발자도 이해할 수 있도록 `this`의 스코프와 관련된 문제를 명확하게 인식하고, `scope` 옵션을 적절히 사용하는 방법을 습득하는 것이 중요하다.
 
 
 
