@@ -15,6 +15,8 @@
 - 🌈[Ext JS MVC + MVMM](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-🌟)
 - [Ext JS MVC + MVMM 2](#🌈-mvc--mvvm-아키텍처의-혼합-사용에-대한-이해-ii-🌟)
 - 🌈[Ext JS 서버 연동 AJAX](#🌟-ext-js-서버-연동-extajax-🌈)
+- 🌈[Ext JS 서버 연동 Store](#🌈-서버연동-store-사용-🎯)
+- 
 ---
 
 # 🌟 Ext JS 기본 컴포넌트 가이드 🌈
@@ -2860,7 +2862,8 @@ Ext.Ajax.request({
     },
     failure: function(res) {
         // 여기서도 'this'는 'AjaxTestController' 인스턴스.
-    }
+    }🎯 요약
+    
 });
 ```
 ### 이렇게 `scope: this`를 지정함으로써, 콜백 함수 내에서 `this.getViewModel().getStore('personalInfo').add(data);`와 같이 현재 컨트롤러의 메소드와 속성에 안전하게 접근할 수 있게 됨.
@@ -2870,6 +2873,398 @@ Ext.Ajax.request({
 #### `scope` 옵션을 사용하여`this`의 컨텍스트를 명시적으로 설정하면, 콜백 함수 내에서 `this`가 항상 기대하는 컨트롤러 인스턴스를 가리키도록 할 수 있어, 코드의 안정성과 가독성이 향상됨.
 #### 비전공자 또는 초보 개발자도 이해할 수 있도록 `this`의 스코프와 관련된 문제를 명확하게 인식하고, `scope` 옵션을 적절히 사용하는 방법을 습득하는 것이 중요하다.
 ---
+# 🌈 서버연동 (Store) 사용 🎯
+
+## 🌟 Ext JS 스토어와 그리드 바인딩 이해하기
+#### `Ext JS`에서 스토어(`Store`)는 데이터를 관리하고, 그 데이터를 화면에 표시하는 컴포넌트(예: `grid`)와 연결될 수 있음. 스토어에 있는 데이터가 변경되면, 그 변경사항이 자동으로 해당 컴포넌트에 반영됨. 이를 통해 데이터와 UI 간의 동기화를 쉽게 관리할 수 있음.
+
+### 📌 스토어 정의와 바인딩
+#### `Store`는 데이터의 집합. 데이터는 정적으로 정의할 수도 있고, 외부 소스에서 동적으로 로드할 수도 있음. 그리드와 같은 UI 컴포넌트는 스토어와 바인딩되어 데이터를 표시.
+
+### 🔹 스토어 예제
+```javascript
+stores:{
+    personalInfo:{
+        data:[
+            { name: 'Jean Luc', email: "jeanluc.picard@enterprise.com", phone: "555-111-1111" },
+            // 더 많은 데이터 항목...
+        ],
+        // 추가 설정: proxy, reader 등...
+    }
+}
+```
+### 🔹 그리드에 스토어 바인딩하기
+```javascript
+{
+    xtype: 'grid',
+    bind: {
+        store: '{personalInfo}' // ViewModel 내 정의된 스토어를 바인딩
+    },
+    columns: [
+        // 그리드 컬럼 정의
+    ]
+}
+```
+### 🚀 스토어 데이터 로딩
+#### 스토어에 `proxy`를 설정하면, 외부 데이터 소스로부터 데이터를 로드할 수 있음. proxy의 type에 따라 다양한 종류의 데이터 소스(예: 메모리, AJAX, REST 등)를 사용할 수 있음.
+
+### 🔹 AJAX를 통한 데이터 로드 예제
+```javascript
+personalInfo:{
+    proxy: {
+        type: 'ajax',
+        url: './service/store.json', // 데이터를 로드할 URL
+        reader: {
+            type: 'json',
+            rootProperty: 'data.list' // 서버 응답에서 실제 데이터가 위치한 경로
+        }
+    },
+    autoLoad: true // 스토어 생성 시 데이터 자동 로드
+}
+```
+### 📖 스토어와 AJAX
+#### 스토어는 `autoLoad`: `true` 설정을 통해 자동으로 데이터를 로드할 수 있음. 이는 스토어가 생성될 때 지정된 데이터 소스로부터 데이터를 가져오도록 함.
+
+### 🔹 store.json 예제 데이터
+```json
+{
+    "success":true,
+    "data": {
+        "list": [
+            { "name": "Store1", "email": "store1@example.com", "phone": "555-111-1111" },
+            // 더 많은 데이터 항목...
+        ]
+    },
+    "msg":""
+}
+```
+### 🎯 핵심 요소
+- #### 스토어(`Store`): 데이터 관리 및 UI 컴포넌트와의 데이터 바인딩을 담당.
+- #### 데이터 바인딩: `ViewModel`의 스토어와 `UI` 컴포넌트(예: `grid`)를 연결.
+- #### 데이터 로드: proxy 설정을 통해 외부 데이터 소스로부터 데이터를 로드.
+- #### 동기화: 스토어의 데이터가 변경되면, 그 변경사항이 바인딩된 UI 컴포넌트에 자동으로 반영.
+
+## 🛠 StoreTestModel.js 수정하기
+#### 스토어의 `autoLoad` 속성을 `false`로 설정하여, 스토어가 생성될 때 자동으로 데이터를 로드하지 않도록 해보자. 이는 사용자가 명시적으로 데이터를 요청할 때만 데이터를 로드하고자 할 때 유용.
+
+```javascript
+Ext.define('ExFrm.view.test.StoreTestModel', {
+    extend: 'Ext.app.ViewModel',
+    alias: 'viewmodel.storetest',
+    stores:{
+        personalInfo:{
+            fields:['aaa'], // 데이터 구조를 정의합니다.(명시안해도 의미없다고함)
+            proxy:{
+                type: 'ajax',
+                url: './service/store.json', // 데이터 로드 URL
+                reader: {
+                    type: 'json',
+                    rootProperty: 'data.list' // 서버 응답에서 데이터가 위치한 경로
+                }
+            },
+            autoLoad: false // 스토어 생성 시 자동 로드 비활성화
+        }
+    }
+});
+```
+### 🔹 StoreTestController 수정하기
+#### 스토어를 명시적으로 로드하는 로직을 컨트롤러에 추가. 사용자가 조회 버튼을 클릭하면 `onSendClick` 함수가 호출되고, 이 함수 내에서 스토어의 .load() 메소드를 호출하여 데이터를 로드.
+
+```javascript
+Ext.define('ExFrm.view.test.StoreTestController', {
+    extend: 'Ext.app.ViewController',
+    alias: 'controller.storetest',
+    onSendClick: function() {
+        let me = this;
+        me.getViewModel().getStore('personalInfo').load(); // 스토어 로드 호출
+    }
+});
+```
+### 📖 데이터 동적 로딩과 표시
+- #### 처음에 데이터가 표시되지 않음: `autoLoad`가 `false`로 설정되어 있기 때문에, 스토어가 자동으로 로드되지 않아 초기에는 데이터가 표시되지 않음.
+- #### 조회 버튼 클릭 시 데이터 로딩: 사용자가 조회 버튼을 클릭하면, 컨트롤러의 `onSendClick` 메소드가 실행되어 스토어의 데이터가 로드되고, 그 결과가 화면에 반영.
+### 🚀 확장성과 응용
+- #### 페이징 및 쿼리 처리: 실제 애플리케이션에서는 서버로부터 데이터를 페이징 처리하거나, 특정 조건에 맞는 데이터를 쿼리하기 위해 스토어의 proxy 설정을 활용할 수 있음.
+- #### rootProperty 외의 속성 활용: `reader`의 `rootProperty` 외에도 페이징 처리를 위한 `totalProperty`, `start`, `limit` 같은 속성을 활용하여 복잡한 데이터 관리 요구사항을 충족시킬 수 있음.
+### 📚 핵심 개념
+- #### 스토어(Store): 데이터를 관리하고, UI 컴포넌트와 바인딩하여 동적인 데이터 표시를 가능하게 함.
+- #### 동적 데이터 로딩: 사용자의 액션에 의해 데이터를 로드하여 애플리케이션의 반응성을 높일 수 있음.
+- #### 데이터 관리와 표시의 분리: 데이터 로딩 로직을 `ViewModel`과 `Controller`에 정의함으로써, MVC/MVVM 패턴의 원칙에 따라 데이터 관리와 UI 로직을 분리.
+
+## 🌟 스토어 데이터 로딩 기본
+#### Ext JS에서 스토어(`Store`)는 애플리케이션의 데이터를 관리. 사용자의 특정 액션에 따라 필요한 데이터를 서버로부터 가져오는 역할을 함.
+
+#### 🚀 데이터 로드를 위한 파라미터 설정
+#### 사용자 입력 받기: 사용자가 입력하는 정보를 파라미터로 서버에 전송할 수 있음. 예를 들어, 특정 주제(`subject1`)에 대한 정보를 검색하고 싶을 때, 사용자는 입력 필드에 주제를 입력.
+
+```javascript
+let params = {
+    subject1: me.lookupReference('subject1').getValue()
+};
+```
+##### 이 코드는 subject1이라는 참조를 가진 입력 필드에서 값을 가져와 params 객체에 저장.
+
+### 🔹 스토어에서 데이터 로드하기
+#### 스토어 로드 호출: `params`에 저장된 사용자 입력 정보를 사용하여 스토어의 데이터를 로드.
+
+```javascript
+me.getViewModel().getStore('personalInfo').load({
+    params: params, // 서버로 전송할 파라미터
+    callback: function(records, operation, success) {
+        // 데이터 로드 후 실행될 콜백 함수
+        Ext.Msg.alert('확인', '콜백함수 실행');
+    }
+});
+```
+#### 이 코드는 `personalInfo` 스토어의 `load` 메서드를 호출하면서, `params`로 사용자 입력 정보를 전달하고, 데이터 로드가 완료된 후에는 콜백 함수를 실행.
+
+### 🎯 콜백 함수의 활용
+#### 콜백 함수 실행: 데이터 로드가 성공적으로 완료되면, 정의된 콜백 함수가 실행. 이 함수 내에서는 데이터 로드 성공 여부에 따른 추가 작업을 수행할 수 있음.
+
+```javascript
+  params: params,
+            callback:function(records, operation, success){
+                console.log(params)
+                Ext.Msg.alert('확인','콜백함수');
+            }
+```
+#### 콜백 함수는 로드된 데이터(`records`), 로드 작업에 대한 정보(`operation`), 그리고 로드 성공 여부(`success`)를 인자로 받습니다. 이를 통해 사용자에게 로드 결과에 대한 피드백을 제공하거나, 필요한 UI 업데이트를 수행할 수 있음.
+
+### 📖 결론
+- #### 파라미터(params): 사용자 입력과 같은 추가 정보를 서버로 전송하여 필요한 데이터를 정확히 요청.
+- #### 콜백 함수: 데이터 로드가 완료된 후 실행되어, 성공 또는 실패에 따른 적절한 사용자 피드백을 제공하거나, 데이터 처리를 수행.
+#####  이러한 과정을 통해, Ext JS 애플리케이션에서 사용자의 요구에 맞는 데이터를 동적으로 로드하고, 로드 결과에 따라 적절한 액션을 취할 수 있고. 이 모든 것이 사용자와의 상호작용을 풍부하게 만들어주며, 애플리케이션의 사용성을 크게 향상시킨다.
+---
+# 🌈 서버연동 (Form Submit) 사용
+
+## 🌈 Ext JS 폼 제출하기: 기본 개념과 구현
+#### Ext JS에서 폼(form) 관리는 Ext.form.Panel을 사용하여 손쉽게 할 수 있다. 이번 섹션에서는 Ext JS의 폼 패널을 사용해 서버로 데이터를 전송하는 과정을 살펴보자.
+
+### 폼 패널 구성하기
+#### 폼 패널(`Ext.form.Panel`)은 사용자 입력을 받기 위한 인터페이스를 제공. 다음은 간단한 폼 패널 예제로, 이름, 이메일, 전화번호를 입력받는 세 개의 텍스트 필드를 만들자.
+
+```javascript
+{
+    xtype: 'form', // Ext.form.Panel
+    layout: {
+        type: 'vbox',
+        align: 'stretch',
+    },
+    items: [{
+        xtype: 'textfield',
+        fieldLabel: '이름',
+        labelAlign: 'right',
+        name: 'name',
+        reference: 'name'
+    },{
+        xtype: 'textfield',
+        fieldLabel: '이메일',
+        labelAlign: 'right',
+        name: 'email',
+        reference: 'email'
+    },{
+        xtype: 'textfield',
+        fieldLabel: '전화번호',
+        labelAlign: 'right',
+        name: 'phone',
+        reference: 'phone'
+    }]
+}
+```
+### 폼 데이터 서버로 전송하기
+#### 폼 패널에 입력된 데이터를 서버로 전송하는 일반적인 방법은 폼 제출(form submit). 폼 제출은 주로 데이터 등록, 저장, 변경 작업에 사용됨.
+
+### MVVM 바인딩과 레퍼런스 사용
+#### Ext JS의 MVVM(`Model-View-ViewMode`l) 아키텍처에서는 데이터 바인딩을 활용하여 뷰모델의 데이터와 뷰 컴포넌트를 연결할 수 있음. 그러나 이 예제에서는 `lookupReference`를 사용하여 폼 필드에 접근하는 방식을 사용.
+
+#### lookupReference 사용 이유: 편리하게 폼 필드에 접근할 수 있으며, 코드의 가독성과 유지보수성을 향상시킴. name 속성을 사용해도 접근이 가능하지만, `reference`를 사용함으로써 더 명확하고 직관적인 코드 작성이 가능.
+### 폼 제출과 데이터 처리
+#### 폼을 제출할 때는 `form.submit()` 메소드를 사용하거나, 컨트롤러에서 버튼 클릭 이벤트 핸들러 내에서 폼 데이터를 수집하여 `AJAX` 요청으로 서버로 전송할 수 있음. 서버에서는 전송받은 데이터를 처리한 후 적절한 응답을 반환.
+
+### 결론
+#### Ext JS에서 폼을 사용하여 데이터를 수집하고 서버로 전송하는 과정은 매우 직관적이며, `Ext.form.Panel`과 MVVM 아키텍처의 기능을 최대한 활용하여 효율적으로 구현할 수 있다. `lookupReference`와 같은 메소드를 사용하여 폼 필드에 접근하고 데이터를 처리하는 방식은 코드의 가독성과 유지보수성을 높여준다.
+
+## 🌟 그리드 설정
+#### 먼저, grid 컴포넌트를 설정. 이 그리드는 `MVVM` 패턴의 `bind` 속성을 사용하여 스토어와 바인딩됨. 각 컬럼은 `dataIndex`를 통해 표시할 데이터 필드를 지정.
+
+```javascript
+xtype: 'grid',
+flex: 1,
+bind: {
+    store: '{personalInfo}'
+},
+columns: [{
+    text: '이름',
+    dataIndex: 'name',
+    width: 100
+}, {
+    text: '이메일',
+    dataIndex: 'email',
+    flex: 1
+}, {
+    text: '전화번호',
+    dataIndex: 'phone',
+    flex: 1
+}],
+listeners: {
+    itemclick: 'onGridClick'
+}
+```
+### 🚀 컨트롤러에서 이벤트 처리
+#### 그리드의 `itemclick` 이벤트에 반응하여 실행될 `onGridClick` 함수를 컨트롤러에 정의. 이 함수에서는 클릭된 아이템의 데이터를 가져와 폼 필드에 설정합니다.
+
+```javascript
+onGridClick: function(view, record) {
+    let name = record.get('name');
+    let email = record.get('email');
+    let phone = record.get('phone');
+
+    this.lookupReference('name').setValue(name);
+    this.lookupReference('email').setValue(email);
+    this.lookupReference('phone').setValue(phone);
+}
+```
+### 📌 arguments 로그 찍기의 중요성
+#### 함수의 파라미터가 불확실하거나 함수가 어떤 인자들을 받는지 확인하고 싶을 때, `console.log('arguments =', arguments);`를 사용하여 현재 함수에 전달된 모든 인자들을 콘솔에 출력할 수 있다. 이 방법은 함수의 동작을 이해하고 디버깅할 때 매우 유용하다.
+
+```javascript
+onGridClick: function(panel, records) {
+    console.log('arguments =', arguments);
+    // 함수 내 로직...
+}
+```
+### 🎯 자동화된 데이터 바인딩 구현
+#### 위에서 설명한 방식은 선택된 레코드의 데이터를 수동으로 폼 필드에 설정하는 방법. 이 과정을 자동화하려면, 공통된 처리 로직을 가진 부모 컨트롤러를 만들고, 필요한 뷰 컨트롤러에서 이를 상속받아 사용할 수 있다. 상속받은 컨트롤러에서는 `onGridClick`과 같은 이벤트 처리 로직을 통해, 선택된 레코드 데이터를 폼에 자동으로 채워넣는 공통 메서드를 호출할 수 있다.
+
+
+### 📖 결론
+#### Ext JS에서 그리드 아이템 클릭 이벤트를 활용하여 데이터를 폼에 자동으로 채우는 과정은, 사용자 경험을 풍부하게 만들고, 데이터 관리를 효율적으로 할 수 있는 좋은 방법. `arguments`를 로그에 찍는 실습을 통해 함수의 작동 방식을 더 잘 이해할 수 있으며, 이벤트 처리와 데이터 바인딩을 자동화하여 코드의 재사용성과 유지보수성을 높일 수 있음.
+
+## 폼 아래에 버튼 추가하기 🛠
+#### 폼 제출을 위해서는 사용자가 클릭할 수 있는 '제출(`Submit`)' 버튼이 필요합니다. Ext JS에서는 이를 위해 `xtype: 'button'`과 `handler` 속성을 사용하여 폼 아래쪽에 버튼을 배치할 수 있다.
+
+```javascript
+xtype: 'form', // 폼 패널 정의 📝
+reference: 'detailPanel', // 폼을 쉽게 찾기 위한 참조 이름 🏷
+items: [
+    // 폼 필드들이 여기에 위치합니다. 예: 이름, 이메일, 전화번호 필드 등 📋
+],
+bbar: [ // 폼의 바닥 부분에 버튼 추가 🎯
+    '->', // 버튼을 오른쪽으로 정렬하기 위한 설정 🔄
+    {
+        xtype: 'button', // 버튼 정의 🖱
+        text: 'Submit', // 버튼에 표시될 텍스트 📄
+        handler: 'onSubmitForm' // 버튼 클릭 시 실행될 함수 이름 🔨
+    }
+]
+```
+### 폼 데이터 서버로 제출하기 📤
+#### 제출 버튼을 클릭했을 때, 폼 데이터를 서버로 제출하는 과정. 이를 위해 `onSubmitForm` 이라는 함수를 정의하고, 폼 데이터를 서버로 제출.
+
+```javascript
+onSubmitForm: function() {
+    let form = this.lookupReference('detailPanel').getForm(); // 폼 참조 가져오기 🔍
+    form.submit({ // 폼 제출 메서드 호출 🚀
+        url: './service/form.json', // 데이터를 받을 서버의 URL 🌐
+        success: function(form, action) { // 제출 성공 시 실행될 콜백 함수 ✅
+            Ext.Msg.alert('성공', '변경했습니다!'); // 성공 알림 메시지 🎉
+        },
+        failure: function(form, action) { // 제출 실패 시 실행될 콜백 함수 ❌
+            // 실패 처리 로직 (예: 에러 메시지 표시)
+        }
+    });
+}
+```
+### 폼 제출에 대한 이해 📚
+#### 위 코드에서는 Ext JS의 폼 패널을 사용하여 사용자로부터 데이터를 입력받고, '제출(`Submit`)' 버튼을 통해 해당 데이터를 서버로 제출하는 과정을 설명. 폼 제출은 일반적으로 사용자가 입력한 데이터를 저장하거나 서버에서 처리해야 할 작업에 사용됨.
+
+#### 이 과정을 통해, Ext JS 애플리케이션에서 사용자 입력을 받고, 이를 서버로 전송하여 필요한 작업을 수행할 수 있고. 이는 웹 애플리케이션에서 데이터 관리와 서버와의 상호작용에 필수적인 부분이다. 🌍
+
+## 폼 제출 콜백 함수에 대한 이해 📚
+Ext JS에서 폼(`Ext.form.Panel`)을 서버로 제출(`submit`)할 때 사용되는 메커니즘에는 주요 두 가지 매개변수, `form`과 `action`, 가 있다. 각각의 역할과 중요성에 대해 알아보자.
+
+### 🖊 form 매개변수
+#### `form `매개변수는 폼 제출이 발생한 `Ext.form.Panel` 인스턴스를 참조합니다. 📌
+#### 개발자는 이를 통해 폼 객체에 접근하고, 폼의 현재 상태나 데이터, 폼 내 필드와 메소드 등을 사용할 수 있다. 🛠
+#### 폼 제출 후에도 폼 객체를 조작하거나 정보를 얻기 위해 사용. 🔄
+### 📡 action 매개변수
+#### `action` 매개변수는 서버로부터 받은 응답에 대한 정보를 담고 있는 객체. 🌐
+#### 이 객체를 통해 서버 응답의 성공 여부, 서버에서 반환된 데이터(`action.result`), 에러 메시지 등을 접근할 수 있다. 🔍
+#### 폼 제출의 성공 여부에 따라 다음 작업을 결정하는 데 필수적인 정보를 제공. ✔️
+### 폼 제출 콜백 함수 예시 📄
+```javascript
+form.submit({
+    success: function(form, action) {
+        // 폼 제출 성공 시 실행 🎉
+        Ext.Msg.alert('성공', '변경했습니다!');
+        var responseData = action.result; // 서버에서 반환된 데이터 접근 📊
+    },
+    failure: function(form, action) {
+        // 폼 제출 실패 시 실행 😢
+        Ext.Msg.alert('실패', '서버 오류 발생');
+    }
+});
+```
+### 왜 매개변수가 두 개일까요? 🤔
+#### `form`과 `action` 두 매개변수는 서로 다른 목적을 가지고 있기 때문에. 🎯
+#### `form`을 통해 폼 객체와 상호작용하고, `action`을 통해 서버 응답을 처리. 🖥 <-> 📱
+#### 폼 제출 과정에서 이 두 가지 측면 모두 중요하기 때문에, Ext JS는 두 매개변수를 모두 콜백 함수에 전달. 🔄
+### 결론 🌟
+#### Ext JS에서 폼 제출의 `success`와 `failur`e` 콜백에서 `form`과 `action` 매개변수를 제공하는 것은 개발자가 폼 객체를 자유롭게 다루고, 서버 응답을 효과적으로 처리할 수 있도록 하기 위함이다. 이를 통해 개발자는 폼 제출 후에도 필요한 작업을 유연하게 수행할 수 있으며, 사용자에게 적절한 피드백을 제공할 수 있다. 🚀
+
+### Ext.Ajax와 직접적인 데이터 처리 🛠
+#### 기본적으로 Ext JS의 `Ext.Ajax`는 자바스크립트의 `XMLHttpRequest`를 추상화한 것으로, 서버와의 비동기 통신을 담당.
+#### 데이터 변환: 개발자가 직접 요청을 보낼 때는 데이터 형태(예: `JSON, XML`)를 직접 지정하고, 서버로부터 받은 응답 데이터도 직접 파싱하여 사용해야 한다. 이 과정에서 모든 데이터 처리를 수동으로 관리해야 한다는 것이 특징.
+#### 사용 예시:
+```javascript
+Ext.Ajax.request({
+    url: 'your-server-endpoint', // 서버 URL
+    method: 'POST', // HTTP 메소드
+    params: { // 서버로 보낼 파라미터
+        key: 'value'
+    },
+    success: function(response) { // 성공 시 콜백
+        var data = Ext.decode(response.responseText); // 응답 파싱
+        // 데이터 처리 로직
+    },
+    failure: function() { // 실패 시 콜백
+        // 에러 처리 로직
+    }
+});
+```
+### 스토어와 폼: 약속된 프로토콜 형식 📦
+- #### 스토어: 데이터 컬렉션을 관리하고, 모델(`Model`)을 통해 데이터의 구조를 정의하며, 프록시(Proxy)를 통해 서버와의 데이터 교환 방식을 설정.
+#### 스토어와 서버 간의 통신은 주로 `JSON` 형식으로 이루어집니다. 스토어가 자동으로 데이터를 객체화하고, `CRUD(Create, Read, Update, Delete)` 연산에 필요한 요청을 서버에 보냄.
+- #### 폼(Form): 사용자로부터 입력받은 데이터를 서버로 전송하는 용도로 사용. `Ext.form.Panel`은 내부적으로 폼 데이터를 적절한 형식으로 인코딩하고, 유효성 검사를 자동으로 수행한 후 서버로 제출.
+#### 폼 데이터는 일반적으로 `name` 속성을 기반으로 서버로 전송되며, 서버 응답 역시 약속된 형식(보통 `JSON`)에 따라 처리됩니다.
+### 결론 🌈
+#### `Ext.Ajax` 사용 시, 모든 데이터 처리 과정(인코딩, 디코딩, 데이터 형식 지정)을 개발자가 직접 관리해야 함. 이는 유연성은 높지만, 더 많은 코딩 작업이 필요...
+#### 스토어와 폼을 사용하면, Ext JS가 데이터 형식과 통신 프로토콜에 대한 처리를 대부분 자동으로 관리해줌. 이는 개발 과정을 간소화시키고, 일관된 방식으로 서버 통신을 구현할 수 있게 해준다.
+#### 즉, `Ext.Ajax`는 맞춤형 통신 로직이 필요할 때, 스토어와 폼은 `Ext JS`의 표준 기능을 이용해 효율적으로 데이터 관리를 하고자 할 때 유용하게 사용하면된다.
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
